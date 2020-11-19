@@ -50,3 +50,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+trab3*
+test*
+*.js
+*.py
+*.zip
