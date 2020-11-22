@@ -1,42 +1,37 @@
-OBJ      := obj
-SRC      := src
-INC      := include
-CFLAGS   := -g -O2 -Wall -pedantic -Wextra -Wwrite-strings
-EXE 	 := trab3
-PROJETO  := main
+CC		:= gcc
+CFLAGS	:= -g -Wall -pedantic -Wextra -Wwrite-strings
 
-# Cria objetos de todos os arquivos de código-fonte para então linká-los no programa final
-main: $(OBJ)/utils.o $(OBJ)/$(PROJETO).o
-	gcc $(OBJ)/*.o -o $(EXE) $(CFLAGS)
+BIN		:= bin
+SRC		:= src
+INCLUDE	:= include
 
-$(OBJ)/utils.o: $(SRC)/utils.c $(INC)/utils.h
-	gcc -c $(CFLAGS) "$(SRC)/utils.c" -o "$(OBJ)/utils.o"
+PROGARGS	:= 
 
-$(OBJ)/$(PROJETO).o: $(PROJETO).c
-	gcc -c $(CFLAGS) $(PROJETO).c -o "$(OBJ)/$(PROJETO).o"
+EXECUTABLE	:= trab3
+SOURCEDIRS	:= $(shell find $(SRC) -type d)
+INCLUDEDIRS	:= $(shell find $(INCLUDE) -type d)
 
-# Roda o programa com entrada 1
-# run_1:
-# 	./$(EXE) M entradas/1.txt
+CINCLUDES	:= $(patsubst %,-I%, $(INCLUDEDIRS:%/=%))
 
-# Roda o programa com entrada 2
-# run_2:
-# 	./$(EXE) M entradas/2.txt
+SOURCES		:= $(wildcard $(patsubst %,%/*.c, $(SOURCEDIRS)))
+OBJECTS		:= $(SOURCES:.c=.o)
 
-# Roda o programa com valgrind e flags úteis (entrada 3)
-# val:
-# 	valgrind --leak-check=full -v --track-origins=yes \
-# 	--show-leak-kinds=all ./$(EXE)
+all: clean $(EXECUTABLE)
 
-# Roda o programa com valgrind sem flags (entrada 3)
-# valzin:
-# 	valgrind ./$(EXE)
-
-# Roda o programa com valgrind e salva resultados num .txt (entrada 3)
-# valtxt:
-# 	valgrind --leak-check=full -v --show-leak-kinds=all --track-origins=yes --verbose --log-file="valgrind-out.txt" ./$(EXE)
-
-# Limpa objetos e o executável do programa
+.PHONY: clean
 clean:
-	-rm $(OBJ)/*.o
-	-rm $(EXE)
+	-$(RM) $(EXECUTABLE)
+	-$(RM) $(OBJECTS)
+
+
+run: all
+	./$(EXECUTABLE) $(PROGARGS)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(CFLAGS) $(CINCLUDES) $^ -o $@ $(LIBRARIES) -lm
+
+val: all
+	valgrind ./$(EXECUTABLE) $(PROGARGS)
+
+full: all
+	- valgrind -v --leak-check=full ./$(EXECUTABLE) $(PROGARGS)
