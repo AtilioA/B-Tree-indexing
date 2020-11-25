@@ -1,3 +1,5 @@
+// INCOMPLETO
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -11,6 +13,13 @@ struct b_tree_node
     int val[MAX + 1], count;
     struct b_tree_node *link[MAX + 1];
 };
+
+struct b_tree_node *createRoot()
+{
+    struct b_tree_node *newRoot = malloc(sizeof(struct b_tree_node));
+
+    return newRoot;
+}
 
 struct b_tree_node *createNode(struct b_tree_node *root, int val, struct b_tree_node *child)
 {
@@ -163,7 +172,7 @@ void traversal(struct b_tree_node *myNode)
         for (i = 0; i < myNode->count; i++)
         {
             traversal(myNode->link[i]);
-            printf("%i ", myNode->val[i + 1]);
+            printf("%d ", myNode->val[i + 1]);
         }
         traversal(myNode->link[i]);
     }
