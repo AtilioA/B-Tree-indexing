@@ -5,7 +5,7 @@ BIN		:= bin
 SRC		:= src
 INCLUDE	:= include
 
-PROGARGS	:= 
+PROGARGS	:=
 
 EXECUTABLE	:= trab3
 SOURCEDIRS	:= $(shell find $(SRC) -type d)
@@ -22,7 +22,6 @@ all: clean $(EXECUTABLE)
 clean:
 	-$(RM) $(EXECUTABLE)
 	-$(RM) $(OBJECTS)
-
 
 run: all
 	./$(EXECUTABLE) $(PROGARGS)

@@ -6,7 +6,6 @@
 
 int main(int argc, char **argv)
 {
-
     // if(argc != 2){
     // 	fprintf(stderr, "Quantidade de argumentos invalido\n");
     // 	exit(1);
@@ -18,26 +17,26 @@ int main(int argc, char **argv)
     //     /* code */
     // }
 
+    // BTreeNode *root = initTree();
 
-    // INCOMPLETO
-    // BTreeNode *root = createRoot();
     // int val, ch;
 
-    // insert(root, 8);
-    // insert(root, 9);
-    // insert(root, 10);
-    // insert(root, 11);
-    // insert(root, 15);
-    // insert(root, 16);
-    // insert(root, 17);
-    // insert(root, 18);
-    // insert(root, 20);
-    // insert(root, 23);
+    // insert(&root, 8);
+    // insert(&root, 9);
+    // insert(&root, 10);
+    // insert(&root, 11);
+    // insert(&root, 15);
+    // insert(&root, 16);
+    // insert(&root, 17);
+    // insert(&root, 18);
+    // insert(&root, 20);
+    // insert(&root, 23);
 
     // traversal(root);
 
     // printf("\n");
     // search(11, &ch, root);
+    // printf("\n");
 
     startInterfaceLoop();
 

@@ -3,28 +3,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// #include "../include/b_tree.h"
-
 #define MAX 3
 #define MIN 2
 
-struct b_tree_node
+typedef struct b_tree_node
 {
-    int val[MAX + 1], count;
-    struct b_tree_node *link[MAX + 1];
-};
+    int val[MAX + 1];
+    int count;
+    struct BTreeNode *link[MAX + 1];
+} BTreeNode;
 
-struct b_tree_node *createRoot()
+struct b_tree_node *initTree()
 {
-    struct b_tree_node *newRoot = malloc(sizeof(struct b_tree_node));
+    struct b_tree_node *root = malloc(sizeof(struct b_tree_node));
 
-    return newRoot;
+    root->count = 1;
+
+    return root;
 }
 
 struct b_tree_node *createNode(struct b_tree_node *root, int val, struct b_tree_node *child)
 {
-    struct b_tree_node *newNode;
-    newNode = (struct b_tree_node *)malloc(sizeof(struct b_tree_node));
+    struct b_tree_node *newNode = (struct b_tree_node *)malloc(sizeof(struct b_tree_node));
 
     newNode->val[1] = val;
     newNode->count = 1;
@@ -37,12 +37,14 @@ struct b_tree_node *createNode(struct b_tree_node *root, int val, struct b_tree_
 void insertNode(int val, int pos, struct b_tree_node *node, struct b_tree_node *child)
 {
     int j = node->count;
+
     while (j > pos)
     {
         node->val[j + 1] = node->val[j];
         node->link[j + 1] = node->link[j];
         j--;
     }
+
     node->val[j + 1] = val;
     node->link[j + 1] = child;
     node->count++;
@@ -125,15 +127,15 @@ int setValue(int val, int *pval, struct b_tree_node *node, struct b_tree_node **
     return 0;
 }
 
-void insert(struct b_tree_node *root, int val)
+void insert(struct b_tree_node **root, int val)
 {
     int flag, i;
     struct b_tree_node *child;
 
-    flag = setValue(val, &i, root, &child);
+    flag = setValue(val, &i, *root, &child);
     if (flag)
     {
-        root = createNode(root, i, child);
+        *root = createNode(*root, i, child);
     }
 }
 
@@ -155,7 +157,7 @@ void search(int val, int *pos, struct b_tree_node *myNode)
             ;
         if (val == myNode->val[*pos])
         {
-            printf("%d has been found.", val);
+            printf("%d has been found", val);
             return;
         }
     }
@@ -177,23 +179,3 @@ void traversal(struct b_tree_node *myNode)
         traversal(myNode->link[i]);
     }
 }
-
-// int main() {
-//   int val, ch;
-
-//   insert(8);
-//   insert(9);
-//   insert(10);
-//   insert(11);
-//   insert(15);
-//   insert(16);
-//   insert(17);
-//   insert(18);
-//   insert(20);
-//   insert(23);
-
-//   traversal(root);
-
-//   printf("\n");
-//   search(11, &ch, root);
-// }

@@ -4,7 +4,7 @@
 typedef struct b_tree_node BTreeNode;
 
 // Cria raiz
-struct b_tree_node *createRoot();
+struct b_tree_node *initTree();
 // Cria um nó
 BTreeNode *createNode(BTreeNode *root, int val, BTreeNode *child);
 // Insere um nó
