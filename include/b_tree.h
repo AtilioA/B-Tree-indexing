@@ -1,23 +1,26 @@
-#ifndef __B_TREE_H
-#define __B_TREE_H
+/*
+ * This code is from "Algorithms in C, Third Edition,"
+ * by Robert Sedgewick, Addison Wesley Longman, 1998.
+ * (with some small alterations...)
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include "item.h"
 
-typedef struct b_tree_node BTreeNode;
+void STinit();
+int STcount();
+void STinsert(Item);
+Item STsearch(Key);
+void STshow_all();
 
-// Cria raiz
-struct b_tree_node *initTree();
-// Cria um nó
-BTreeNode *createNode(BTreeNode *root, int val, BTreeNode *child);
-// Insere um nó
-void insertNode(int val, int pos, BTreeNode *node, BTreeNode *child);
-// Divide um nó
-void splitNode(int val, int *pval, int pos, BTreeNode *node, BTreeNode *child, BTreeNode **newNode);
-// Insere um valor
-void insert(BTreeNode *root, int val);
-// Procura um nó
-void search(int val, int *pos, BTreeNode *myNode);
-// Percorre nós
-void traversal(BTreeNode *myNode);
-// Põe um valor
-int setValue(int val, int *pval, BTreeNode *node, BTreeNode **child);
+Item STselect(int);
 
-#endif
+/*
+ * Rotinas para experimentos para arvores - nao fazem parte da 
+ * implementacao de Tabelas de Simbolos.  Elas servem para nos
+ * mostrar como 'e a arvore etc.  
+ * (Implementadas em apenas alguns casos.)
+ */
+
+// void BSTbalance();
+// void BSTquickprint();

@@ -2,180 +2,116 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "../include/item.h"
 
-#define MAX 3
-#define MIN 2
-
-typedef struct b_tree_node
+typedef struct st_node ST_Node;
+typedef struct entry Entry;
+struct ST_Node
 {
-    int val[MAX + 1];
-    int count;
-    struct BTreeNode *link[MAX + 1];
-} BTreeNode;
+    Entry *b;
+    int m;
+};
+typedef struct ST_Node *link;
 
-struct b_tree_node *initTree()
+struct entry
 {
-    struct b_tree_node *root = malloc(sizeof(struct b_tree_node));
+    Key key;
+    Item item;
+    link next;
+};
 
-    root->count = 1;
+static link head;
+static int H, N;
 
-    return root;
+link createLink()
+{
+    link x = malloc(sizeof *x);
+    x->m = 0;
+    return x;
 }
 
-struct b_tree_node *createNode(struct b_tree_node *root, int val, struct b_tree_node *child)
+void STinit(int maxN)
 {
-    struct b_tree_node *newNode = (struct b_tree_node *)malloc(sizeof(struct b_tree_node));
-
-    newNode->val[1] = val;
-    newNode->count = 1;
-    newNode->link[0] = root;
-    newNode->link[1] = child;
-
-    return newNode;
+    head = createLink();
+    H = 0;
+    N = 0;
 }
 
-void insertNode(int val, int pos, struct b_tree_node *node, struct b_tree_node *child)
+Item searchR(link h, Key v, int H)
 {
-    int j = node->count;
-
-    while (j > pos)
-    {
-        node->val[j + 1] = node->val[j];
-        node->link[j + 1] = node->link[j];
-        j--;
-    }
-
-    node->val[j + 1] = val;
-    node->link[j + 1] = child;
-    node->count++;
+    int j;
+    if (H == 0)
+        for (j = 0; j < h->m; j++)
+            if (eq(v, h->b[j].key))
+                return h->b[j].item;
+    if (H != 0)
+        for (j = 0; j < h->m; j++)
+            if ((j + 1 == h->m) || less(v, h->b[j + 1].key))
+                return searchR(h->b[j].next, v, H - 1);
+    return NULL;
 }
 
-void splitNode(int val, int *pval, int pos, struct b_tree_node *node, struct b_tree_node *child, struct b_tree_node **newNode)
-{
-    int median, j;
+// Item STsearch(Key v)
+// {
+//     return searchR(head, v, H);
+// }
 
-    if (pos > MIN)
-    {
-        median = MIN + 1;
-    }
+link split(link h, int M)
+{
+    int j;
+    link t = createLink();
+    for (j = 0; j < M / 2; j++)
+        t->b[j] = h->b[M/2+j];
+    h->m = M/2; t->m = M/2; 
+    return t;
+}
+
+link insertR(link h, Item item, int H, int M)
+{
+    int i, j;
+    Key v = key(item);
+    Entry x;
+    link t, u;
+    x.key = v;
+    x.item = item;
+
+    if (H == 0)
+        for (j = 0; j < h->m; j++)
+            if (less(v, h->b[j].key))
+                break;
+    if (H != 0)
+        for (j = 0; j < h->m; j++)
+            if ((j + 1 == h->m) || less(v, h->b[j + 1].key))
+            {
+                t = h->b[j++].next;
+                u = insertR(t, item, H - 1, M);
+                if (u == NULL)
+                    return NULL;
+                x.key = u->b[0].key;
+                x.next = u;
+                break;
+            }
+
+    for (i = (h->m)++; i > j; i--)
+        h->b[i] = h->b[i - 1];
+    h->b[j] = x;
+    if (h->m < M)
+        return NULL;
     else
-    {
-        median = MIN;
-    }
-
-    *newNode = (struct b_tree_node *)malloc(sizeof(struct b_tree_node));
-    j = median + 1;
-    while (j <= MAX)
-    {
-        (*newNode)->val[j - median] = node->val[j];
-        (*newNode)->link[j - median] = node->link[j];
-        j++;
-    }
-    node->count = median;
-    (*newNode)->count = MAX - median;
-
-    if (pos <= MIN)
-    {
-        insertNode(val, pos, node, child);
-    }
-    else
-    {
-        insertNode(val, pos - median, *newNode, child);
-    }
-    *pval = node->val[node->count];
-    (*newNode)->link[0] = node->link[node->count];
-    node->count--;
+        return split(h, M);
 }
 
-int setValue(int val, int *pval, struct b_tree_node *node, struct b_tree_node **child)
+void STinsert(link head, Item item, int H, int M)
 {
-    int pos;
-    if (!node)
-    {
-        *pval = val;
-        *child = NULL;
-        return 1;
-    }
-
-    if (val < node->val[1])
-    {
-        pos = 0;
-    }
-    else
-    {
-        for (pos = node->count;
-             (val < node->val[pos] && pos > 1); pos--)
-            ;
-        if (val == node->val[pos])
-        {
-            printf("Duplicates are not permitted.\n");
-            return 0;
-        }
-    }
-    if (setValue(val, pval, node->link[pos], child))
-    {
-        if (node->count < MAX)
-        {
-            insertNode(*pval, pos, node, *child);
-        }
-        else
-        {
-            splitNode(*pval, pval, pos, node, *child, child);
-            return 1;
-        }
-    }
-    return 0;
-}
-
-void insert(struct b_tree_node **root, int val)
-{
-    int flag, i;
-    struct b_tree_node *child;
-
-    flag = setValue(val, &i, *root, &child);
-    if (flag)
-    {
-        *root = createNode(*root, i, child);
-    }
-}
-
-void search(int val, int *pos, struct b_tree_node *myNode)
-{
-    if (!myNode)
-    {
+    link t, u = insertR(head, item, H, M);
+    if (u == NULL)
         return;
-    }
-
-    if (val < myNode->val[1])
-    {
-        *pos = 0;
-    }
-    else
-    {
-        for (*pos = myNode->count;
-             (val < myNode->val[*pos] && *pos > 1); (*pos)--)
-            ;
-        if (val == myNode->val[*pos])
-        {
-            printf("%d has been found", val);
-            return;
-        }
-    }
-    search(val, pos, myNode->link[*pos]);
-
-    return;
-}
-
-void traversal(struct b_tree_node *myNode)
-{
-    int i;
-    if (myNode)
-    {
-        for (i = 0; i < myNode->count; i++)
-        {
-            traversal(myNode->link[i]);
-            printf("%d ", myNode->val[i + 1]);
-        }
-        traversal(myNode->link[i]);
-    }
+    t = createLink();
+    t->m = 2;
+    t->b[0].key = head->b[0].key;
+    t->b[0].next = head;
+    t->b[1].key = u->b[0].key;
+    t->b[1].next = u;
+    head = t;
+    H++;
 }
