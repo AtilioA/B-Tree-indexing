@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "../include/utils.h"
 #include "../include/interface.h"
 #include "../include/b_tree.h"
+#include "../include/binfile.h"
 
 int main(int argc, char **argv)
 {
@@ -38,7 +41,22 @@ int main(int argc, char **argv)
     // search(11, &ch, root);
     // printf("\n");
 
-    startInterfaceLoop();
+    // startInterfaceLoop();
+
+
+    FILE *write_ptr = fopen("input/basic", "wb");
+
+    writerecord("ed2", "facil",1, write_ptr);
+
+    writerecord("paa", "deboa",1, write_ptr);
+
+    writerecord("tc", "suave",0, write_ptr);
+
+    writerecord("cd", "jafoi",1, write_ptr);
+
+    fclose(write_ptr);
+
+    
 
     return EXIT_SUCCESS;
 }
