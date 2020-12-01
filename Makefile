@@ -29,6 +29,9 @@ run: all
 $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(CFLAGS) $(CINCLUDES) $^ -o $@ $(LIBRARIES) -lm
 
+lib:
+	gcc lib/hexdump.c -o bin/hexdump -O3
+
 val: all
 	valgrind ./$(EXECUTABLE) $(PROGARGS)
 
