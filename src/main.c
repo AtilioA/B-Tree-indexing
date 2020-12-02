@@ -43,20 +43,23 @@ int main(int argc, char **argv)
 
     // startInterfaceLoop();
 
+    // FILE *write_ptr = fopen("input/basic", "wb");
 
-    FILE *write_ptr = fopen("input/basic", "wb");
+    // writerecord("ed2", "facil",1, write_ptr);
 
-    writerecord("ed2", "facil",1, write_ptr);
+    // writerecord("paa", "deboa",1, write_ptr);
 
-    writerecord("paa", "deboa",1, write_ptr);
+    // writerecord("tc", "suave",0, write_ptr);
 
-    writerecord("tc", "suave",0, write_ptr);
+    // writerecord("cd", "jafoi",1, write_ptr);
 
-    writerecord("cd", "jafoi",1, write_ptr);
+    // fclose(write_ptr);
 
-    fclose(write_ptr);
+    FILE *fp = fopen("input/basic", "rb");
 
-    
+    readFile(fp);
+
+    fclose(fp);
 
     return EXIT_SUCCESS;
 }

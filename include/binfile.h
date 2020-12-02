@@ -1,2 +1,4 @@
 
-void writerecord(char* identificador, char* valor, int ativo, FILE* f);
+void writerecord(char* id, char* value, int enable, FILE* f);
+
+void readFile(FILE *fp);
