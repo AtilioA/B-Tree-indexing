@@ -3,7 +3,7 @@
 #include <string.h>
 #include <strings.h>
 #include "../include/binfile.h"
-#define MAXBLOCKSIZE 30
+#define MAXBLOCKSIZE 30 //lembrar de trocar essa porra pelo amor de deus
 
 void writerecord(char* id, char* value, int enable, FILE* f){
     int n = strlen(id)+strlen(value)+1;
