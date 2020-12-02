@@ -1,11 +1,13 @@
+#ifndef __RECORD_H
+#define __RECORD_H
+#include <stdio.h>
+#include <stdlib.h>
+#include "item.h"
 /*
  * This code is from "Algorithms in C, Third Edition,"
  * by Robert Sedgewick, Addison Wesley Longman, 1998.
  * (with some small alterations...)
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include "item.h"
 
 void STinit();
 int STcount();
@@ -24,3 +26,5 @@ Item STselect(int);
 
 // void BSTbalance();
 // void BSTquickprint();
+
+#endif
