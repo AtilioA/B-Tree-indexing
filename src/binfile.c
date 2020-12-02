@@ -3,6 +3,7 @@
 #include <string.h>
 #include <strings.h>
 #include "../include/binfile.h"
+#include "../include/record.h"
 #define MAXBLOCKSIZE 30 //lembrar de trocar essa porra pelo amor de deus
 
 struct Block
@@ -39,16 +40,12 @@ int fileSize(FILE *fp){
 
 /** Se num for menor que o tamanho máximo do bloco,
      * então o tamanho do bloco será num **/
-int newBlockSize(int num){
+long int newBlockSize(long int num){
     if(num < MAXBLOCKSIZE){
         return num;
     }else{
         return MAXBLOCKSIZE;
     }
-}
-
-int getBlockSize(unsigned char *block){
-    return strlen(((char *)block));
 }
 
 char *getId(Block block, int posStart, int maxSize){
@@ -100,15 +97,17 @@ int transcribeRecords(Block block, long fileSeek){ // por enquanto só printa a 
             return abs(block.size - i - 5 - n);
         }
 
-        // posição do registro no arquivo
-        unsigned long int pos = fileSeek + i; 
+        Item recordIdx = malloc(sizeof(struct index));
 
-        char *id = getId(block, i + 5, n);
+        // posição do registro no arquivo
+        recordIdx->fileIndex = fileSeek + i;
+
+        recordIdx->id = getId(block, i + 5, n);
 
         // Aqui vai inserir a posição e a chave na árvore binária
-        printf("%d %d %s\n", n, pos, id);
+        printf("%d %ld %s\n", n, recordIdx->fileIndex, recordIdx->id);
 
-        free(id); // temporário
+        ITEMfree(recordIdx); // temporário
     }
 
     return 0;
@@ -120,8 +119,8 @@ Block readBlock(FILE *fp){
         return;
     }
     
-    int fSize = fileSize(fp);
-    int blockSize = newBlockSize(fSize - ftell(fp));
+    long int fSize = fileSize(fp);
+    long int blockSize = newBlockSize(fSize - ftell(fp));
 
     unsigned char *buffer = malloc(sizeof(unsigned char) * blockSize);
     Block obj;
@@ -164,7 +163,7 @@ void indexFile(FILE *fp){
 
 }
 
-Block readBlockOnPos(FILE *fp, int pos){
+Block readBlockOnPos(FILE *fp, long int pos){
     if(fp == NULL){
         return;
     }
