@@ -3,17 +3,13 @@
 #include <stdio.h>
 #include <string.h>
 
-
-
-
-
 typedef char *Key;
-struct record
+struct index
 {
     Key word;
     int occ; 
 };
-typedef struct record *Item;
+typedef struct index *Item;
 
 int ITEMscan(Key *);
 void ITEMshow(Item);

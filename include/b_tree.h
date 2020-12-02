@@ -2,7 +2,7 @@
 #define __RECORD_H
 #include <stdio.h>
 #include <stdlib.h>
-#include "item.h"
+#include "record.h"
 /*
  * This code is from "Algorithms in C, Third Edition,"
  * by Robert Sedgewick, Addison Wesley Longman, 1998.
