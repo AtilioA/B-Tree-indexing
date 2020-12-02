@@ -1,22 +1,23 @@
 #ifndef __ITEM_H
 #define __ITEM_H
-#include <stdio.h>
-#include <string.h>
 
 typedef char *Key;
 struct index
 {
-    Key word;
-    int occ; 
+    Key id;
+    long int fileIndex; 
 };
 typedef struct index *Item;
 
 int ITEMscan(Key *);
+
 void ITEMshow(Item);
 
+void ITEMfree(Item);
+
 #define NULLitem NULL
-#define key(A) (A->word)
-#define num(A) (A->occ)
+#define key(A) (A->id)
+#define num(A) (A->fileIndex)
 
 #define eq(A, B) (strcmp(A, B) == 0)
 #define less(A, B) (strcmp(A, B) < 0)
