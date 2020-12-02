@@ -1,5 +1,5 @@
-#ifndef __RECORD_H
-#define __RECORD_H
+#ifndef __BTREE_H
+#define __BTREE_H
 #include <stdio.h>
 #include <stdlib.h>
 #include "record.h"
