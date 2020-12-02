@@ -140,7 +140,9 @@ Block readBlock(FILE *fp){
 
 }
 
-void readFile(FILE *fp){
+// Essa função varre o arquivo e insere a posição e o id 
+// de cada registro na árvore de busca
+void indexFile(FILE *fp){
     if(fp == NULL){
         return;
     }
@@ -158,8 +160,17 @@ void readFile(FILE *fp){
         free(block.bytes);
         fseek(fp, backSeek*(-1) ,SEEK_CUR);
 
-
     }
 
-    
+}
+
+Block readBlockOnPos(FILE *fp, int pos){
+    if(fp == NULL){
+        return;
+    }
+
+    fseek(fp, pos, SEEK_SET);    
+
+    return readBlock(fp);
+
 }

@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 
     FILE *fp = fopen("input/basic", "rb");
 
-    readFile(fp);
+    indexFile(fp);
 
     fclose(fp);
 
