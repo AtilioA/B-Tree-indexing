@@ -5,6 +5,14 @@
 #include "../include/binfile.h"
 #define MAXBLOCKSIZE 30 //lembrar de trocar essa porra pelo amor de deus
 
+struct Block
+{
+    unsigned char *bytes;
+    int size;
+};
+
+typedef struct Block Block;
+
 void writerecord(char* id, char* value, int enable, FILE* f){
     int n = strlen(id)+strlen(value)+1;
     char v=',';
@@ -19,9 +27,11 @@ int fileSize(FILE *fp){
     if(fp == NULL){
         return -1;
     }
+    int previousSeek = ftell(fp);
     fseek(fp, 0L, SEEK_END);
     int fSize = ftell(fp);
-    rewind(fp);
+    fseek(fp, previousSeek, SEEK_SET);
+    // rewind(fp);
 
     return fSize;
 }
@@ -37,11 +47,15 @@ int newBlockSize(int num){
     }
 }
 
-char *getId(unsigned char* block, int posStart, int maxSize){
+int getBlockSize(unsigned char *block){
+    return strlen(((char *)block));
+}
+
+char *getId(Block block, int posStart, int maxSize){
     // Conta o tamanho do id
     int size = 0;
     for (int i = posStart; size < maxSize; i++, size++){
-        char token = (char)((unsigned char)block[i]);
+        char token = (char)((unsigned char)block.bytes[i]);
         if(token == ','){
             break;
         }
@@ -50,7 +64,7 @@ char *getId(unsigned char* block, int posStart, int maxSize){
     char *id = malloc(sizeof(char) * (size + 1));
 
     for (int i = posStart, c = 0; c < size ; i++, c++){
-        char letter = (char)((unsigned char)block[i]);
+        char letter = (char)((unsigned char)block.bytes[i]);
         id[c] = letter;
     }
     id[size] = '\0' ;
@@ -64,26 +78,26 @@ char *getId(unsigned char* block, int posStart, int maxSize){
  * Retorna a quantidade de bytes a serem recuados, caso exista
  * um registro incompleto
  **/
-int transcribeRecords(unsigned char* block, int blockSize, long fileSeek){ // por enquanto só printa a chave e a posição no arquivo
+int transcribeRecords(Block block, long fileSeek){ // por enquanto só printa a chave e a posição no arquivo
     int n = 0;
-    for (int i = 0; i < blockSize; i += 5+n){
+    for (int i = 0; i < block.size; i += 5+n){
         // primeira checagem de registro incompleto
         // talvez não seja necessária
         // tomar muito cuidado cm essa porra
-        if((blockSize - i) < 8){
-            return abs(blockSize - i);
+        if((block.size - i) < 8){
+            return abs(block.size - i);
         }
 
-        n = (int)((unsigned char)(block[i + 3]) << 24 |
-            (unsigned char)(block[i + 2]) << 16 |
-            (unsigned char)(block[i + 1]) << 8 |
-            (unsigned char)(block[i]));
+        n = (int)((unsigned char)(block.bytes[i + 3]) << 24 |
+            (unsigned char)(block.bytes[i + 2]) << 16 |
+            (unsigned char)(block.bytes[i + 1]) << 8 |
+            (unsigned char)(block.bytes[i]));
 
-        // int active = (int)((unsigned char)(block[i + 4])); // IGNORÁVEL
+        // int active = (int)((unsigned char)(block.bytes[i + 4])); // IGNORÁVEL
 
         // Segunda checagem de registro incompleto
-        if((blockSize - i - 5 - n) < 0){
-            return abs(blockSize - i - 5 - n);
+        if((block.size - i - 5 - n) < 0){
+            return abs(block.size - i - 5 - n);
         }
 
         // posição do registro no arquivo
@@ -101,31 +115,50 @@ int transcribeRecords(unsigned char* block, int blockSize, long fileSeek){ // po
     
 }
 
-void readFile(FILE *fp){
+Block readBlock(FILE *fp){
     if(fp == NULL){
         return;
     }
     
     int fSize = fileSize(fp);
-    int blockSize = newBlockSize(fSize);
+    int blockSize = newBlockSize(fSize - ftell(fp));
 
-    unsigned char buffer[blockSize];
+    unsigned char *buffer = malloc(sizeof(unsigned char) * blockSize);
+    Block obj;
+    obj.bytes = NULL;
+    
+    int blocks = fread(buffer, blockSize, 1, fp);
 
-    int blocks = 1;
+    if(blocks == 1){
+        obj.bytes = buffer;
+        obj.size = blockSize;
+    }else{
+        free(buffer);
+    }
+
+    return obj;
+
+}
+
+void readFile(FILE *fp){
+    if(fp == NULL){
+        return;
+    }
 
     // Itera até a quantidade de blocos lidos ser 0
     while(1){
         long actualSeek = ftell(fp);
-        blocks = fread(buffer, blockSize, 1, fp);
+        Block block = readBlock(fp);
 
-        if(blocks == 0){
+        if(block.bytes == NULL){
             break;
         }
 
-        int backSeek = transcribeRecords(buffer, blockSize, actualSeek);
+        int backSeek = transcribeRecords(block, actualSeek);
+        free(block.bytes);
         fseek(fp, backSeek*(-1) ,SEEK_CUR);
 
-        blockSize = newBlockSize(fSize - ftell(fp));
+
     }
 
     
