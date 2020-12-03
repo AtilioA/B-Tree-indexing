@@ -1,6 +1,10 @@
 #ifndef __RECORD_H
 #define __RECORD_H
-struct record{
+
+#include <string.h>
+
+struct record
+{
     char *id;
     char *value;
 };
@@ -21,10 +25,9 @@ typedef char *Key;
 struct index
 {
     Key id;
-    long int fileIndex; 
+    long int fileIndex;
 };
 typedef struct index *Item;
-
 
 int ITEMscan(Key *);
 
@@ -38,7 +41,5 @@ void ITEMfree(Item);
 
 #define eq(A, B) (strcmp(A, B) == 0)
 #define less(A, B) (strcmp(A, B) < 0)
-
-
 
 #endif
