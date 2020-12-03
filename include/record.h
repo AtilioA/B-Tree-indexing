@@ -1,5 +1,19 @@
-#ifndef __ITEM_H
-#define __ITEM_H
+#ifndef __RECORD_H
+#define __RECORD_H
+struct record{
+    char *id;
+    char *value;
+};
+
+typedef struct record *Record;
+
+Record RECORDcreate(char *id, char *value);
+
+void RECORDfree(Record);
+
+Record RECORDget(FILE *fp, long int fileIndex);
+
+void RECORDprint(Record x);
 
 typedef char *Key;
 struct index
@@ -8,6 +22,7 @@ struct index
     long int fileIndex; 
 };
 typedef struct index *Item;
+
 
 int ITEMscan(Key *);
 
@@ -21,5 +36,7 @@ void ITEMfree(Item);
 
 #define eq(A, B) (strcmp(A, B) == 0)
 #define less(A, B) (strcmp(A, B) < 0)
+
+
 
 #endif

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <ctype.h>
 #include "../include/binfile.h"
 #include "../include/record.h"
 #define MAXBLOCKSIZE 30 //lembrar de trocar essa porra pelo amor de deus
@@ -32,7 +33,6 @@ int fileSize(FILE *fp){
     fseek(fp, 0L, SEEK_END);
     int fSize = ftell(fp);
     fseek(fp, previousSeek, SEEK_SET);
-    // rewind(fp);
 
     return fSize;
 }
@@ -67,6 +67,19 @@ char *getId(Block block, int posStart, int maxSize){
     id[size] = '\0' ;
 
     return id;
+}
+
+char *getValue(Block block, int posStart, int maxSize){
+    // Conta o tamanho do value
+    char *value = malloc(sizeof(char) * (maxSize + 1));
+
+    for (int i = posStart, c = 0; c < maxSize ; i++, c++){
+        char letter = (char)((unsigned char)block.bytes[i]);
+        value[c] = letter;
+    }
+    value[maxSize] = '\0' ;
+
+    return value;
 }
 
 /**
@@ -107,7 +120,7 @@ int transcribeRecords(Block block, long fileSeek){ // por enquanto só printa a 
         // Aqui vai inserir a posição e a chave na árvore binária
         printf("%d %ld %s\n", n, recordIdx->fileIndex, recordIdx->id);
 
-        ITEMfree(recordIdx); // temporário
+        ITEMfree(recordIdx); // remover quando a inserção na btree tiver aqui
     }
 
     return 0;
@@ -116,7 +129,8 @@ int transcribeRecords(Block block, long fileSeek){ // por enquanto só printa a 
 
 Block readBlock(FILE *fp){
     if(fp == NULL){
-        return;
+        printf("NULL file pointer on function readBlock");
+        exit(1);
     }
     
     long int fSize = fileSize(fp);
@@ -143,7 +157,8 @@ Block readBlock(FILE *fp){
 // de cada registro na árvore de busca
 void indexFile(FILE *fp){
     if(fp == NULL){
-        return;
+        printf("NULL file pointer on function indexFile");
+        exit(1);
     }
 
     // Itera até a quantidade de blocos lidos ser 0
@@ -165,11 +180,44 @@ void indexFile(FILE *fp){
 
 Block readBlockOnPos(FILE *fp, long int pos){
     if(fp == NULL){
-        return;
+        printf("NULL file pointer on function readBlockOnPos");
+        exit(1);
     }
 
     fseek(fp, pos, SEEK_SET);    
 
     return readBlock(fp);
 
+}
+
+Record getRecordOnBlock(Block block, long int posStart){
+    int i = posStart;
+    
+    int n = (int)((unsigned char)(block.bytes[i + 3]) << 24 |
+        (unsigned char)(block.bytes[i + 2]) << 16 |
+        (unsigned char)(block.bytes[i + 1]) << 8 |
+        (unsigned char)(block.bytes[i]));
+
+    int active = (int)((unsigned char)(block.bytes[i + 4]));
+
+    if(active){
+        char *id = getId(block, i + 5, n);
+
+        char *value = getValue(block, (strlen(id) + 6), (n - strlen(id) - 1));
+
+        return RECORDcreate(id, value);
+    }else{
+        return NULL;
+    }
+
+}
+
+Record getRecordOnPos(FILE *fp, long int fileIndex){
+    Block block = readBlockOnPos(fp, fileIndex);
+
+    Record new = getRecordOnBlock(block, 0);
+
+    free(block.bytes);
+
+    return new;
 }

@@ -6,6 +6,7 @@
 #include "../include/interface.h"
 #include "../include/b_tree.h"
 #include "../include/binfile.h"
+#include "../include/record.h"
 
 int main(int argc, char **argv)
 {
@@ -58,6 +59,21 @@ int main(int argc, char **argv)
     FILE *fp = fopen("input/basic", "rb");
 
     indexFile(fp);
+
+    Record x = NULL;
+
+    x = getRecordOnPos(fp, 41);
+    RECORDprint(x);
+    RECORDfree(x);
+    x = getRecordOnPos(fp, 0);
+    RECORDprint(x);
+    RECORDfree(x);
+    x = getRecordOnPos(fp, 14);
+    RECORDprint(x);
+    RECORDfree(x);
+    x = getRecordOnPos(fp, 28);
+    RECORDprint(x);
+    RECORDfree(x);
 
     fclose(fp);
 
