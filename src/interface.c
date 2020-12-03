@@ -44,7 +44,7 @@ char **readCommand()
         }
         else
         {
-            commandData[i] = "\0";
+            commandData[i] = (char *)("\0");
         }
     }
 
