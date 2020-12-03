@@ -84,9 +84,9 @@ int main(int argc, char **argv)
     x = getRecordOnPos(fp, 28);
     RECORDprint(x);
     RECORDfree(x);
-    x = getRecordOnPos(fp, 54);
-    RECORDprint(x);
-    RECORDfree(x);
+    // x = getRecordOnPos(fp, 54);
+    // RECORDprint(x);
+    // RECORDfree(x);
 
     fclose(fp);
 
