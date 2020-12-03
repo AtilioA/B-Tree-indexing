@@ -224,23 +224,26 @@ Record getRecordOnPos(FILE *fp, long int fileIndex){
 
 // Essa função precisa que o fp seja aberto em modo "r+b"
 void changeRecordState(FILE *fp, long int fileIndex, int state){
+    
+    if(state != getRecordState(fp, fileIndex)){
+        fseek(fp, fileIndex + 4, SEEK_SET);
+        fwrite(&state,1,1,fp);
+    }
+}
+
+int getRecordState(FILE *fp, long int fileIndex){
     if(fp == NULL){
-        printf("NULL file pointer on function changeRecordState");
+        printf("NULL file pointer on function getRecordState");
         exit(1);
     }
 
-    long int targetPos = fileIndex + 4;
+    Block block = readBlockOnPos(fp, fileIndex + 4);
 
-    Block block = readBlockOnPos(fp, targetPos);
-
-    int active = (int)((unsigned char)(block.bytes[0]));
+    int state = (int)((unsigned char)(block.bytes[0]));
 
     free(block.bytes);
 
-    if(active != state){
-        fseek(fp, targetPos, SEEK_SET);
-        fwrite(&state,1,1,fp);
-    }
+    return state;
 }
 
 // Essa função precisa que o fp seja aberto em modo "r+b"
@@ -251,16 +254,6 @@ void recordSoftDelete(FILE *fp, long int fileIndex){
     }
 
     changeRecordState(fp, fileIndex, 0);
-}
-
-// Essa função precisa que o fp seja aberto em modo "r+b"
-void enableRecord(FILE *fp, long int fileIndex){
-    if(fp == NULL){
-        printf("NULL file pointer on function enableRecord");
-        exit(1);
-    }
-
-    changeRecordState(fp, fileIndex, 1);
 }
 
 long int insertRecord(FILE *fp, char *id, char *value){

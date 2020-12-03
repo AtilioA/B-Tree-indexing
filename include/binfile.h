@@ -15,7 +15,7 @@ Record getRecordOnPos(FILE *fp, long int fileIndex);
 
 void recordSoftDelete(FILE *fp, long int fileIndex);
 
-void enableRecord(FILE *fp, long int fileIndex);
+int getRecordState(FILE *fp, long int fileIndex);
 
 long int insertRecord(FILE *fp, char *id, char *value);
 
