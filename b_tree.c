@@ -80,13 +80,20 @@ Record searchR(ST_Node *head, Key v, int H)
 
 ST_Node *split(ST_Node **h, int M)
 {
-    int j;
-    ST_Node *t = createLink(M);
+    printf("Splittando...\n");
+    int j = 0;
+    ST_Node *newSplitNode = createLink(M);
+
     for (j = 0; j < M / 2; j++)
-        t->entry[j] = (*h)->entry[M / 2 + j];
+    {
+        printf("Split: %s\n", (*h)->entry[M / (2 + j)].key);
+        newSplitNode->entry[j] = (*h)->entry[M / (2 + j)];
+    }
+
     (*h)->size = M / 2;
-    t->size = M / 2;
-    return t;
+    newSplitNode->size = M / 2;
+
+    return newSplitNode;
 }
 
 ST_Node *insertR(ST_Node **head, Record item, int *H, int M)
@@ -107,8 +114,7 @@ ST_Node *insertR(ST_Node **head, Record item, int *H, int M)
             // printf("\tFOR\n");
             if (less(v, (*head)->entry[j].key))
             {
-                // printf("less(v, head->entry[j].key)\n");
-
+                // printf("less(v, head->entry[j].key)\n")
                 break;
             }
         }
@@ -130,9 +136,14 @@ ST_Node *insertR(ST_Node **head, Record item, int *H, int M)
         (*head)->entry[i] = (*head)->entry[i - 1];
     (*head)->entry[j] = x;
     if ((*head)->size < M)
+    {
+        printf("(*head)->size < M\n");
         return NULL;
+    }
     else
+    {
         return split(head, M);
+    }
 }
 
 void STinsert(ST_Node **head, Record item, int *H, int M)
@@ -176,7 +187,7 @@ void traversal(ST_Node *head)
 
 int main()
 {
-    int M = 10, H = 0; // M - argv()
+    int M = 7, H = 0; // M - argv()
     ST_Node *head = NULL;
     STinit(&head, &H, M);
     // printf("%ld\n", head->size);
