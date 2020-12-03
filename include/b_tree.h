@@ -3,28 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "record.h"
-/*
- * This code is from "Algorithms in C, Third Edition,"
- * by Robert Sedgewick, Addison Wesley Longman, 1998.
- * (with some small alterations...)
- */
 
-void STinit();
-int STcount();
-void STinsert(Item);
-Item STsearch(Key);
-void STshow_all();
+typedef struct entry Entry;
+typedef struct st_node ST_Node;
 
-Item STselect(int);
-
-/*
- * Rotinas para experimentos para arvores - nao fazem parte da 
- * implementacao de Tabelas de Simbolos.  Elas servem para nos
- * mostrar como 'e a arvore etc.  
- * (Implementadas em apenas alguns casos.)
- */
-
-// void BSTbalance();
-// void BSTquickprint();
+void STinit(ST_Node **head, int *H, int M);
+void STinsert(ST_Node **head, Record item, int *H, int M);
+Record searchR(ST_Node *head, Key v, int H);
 
 #endif

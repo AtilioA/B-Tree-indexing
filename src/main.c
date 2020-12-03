@@ -66,6 +66,30 @@ int main(int argc, char **argv)
 
     // fclose(fp);
 
+    int M = 8, H = 0;
+    ST_Node *head = NULL;
+    STinit(&head, &H, M);
+
+    Record item1 = RECORDcreate((char *)"123", (char *)"5");
+    Record item2 = RECORDcreate((char *)"124", (char *)"6");
+    Record item3 = RECORDcreate((char *)"Ezequiel", (char *)"8");
+    Record item4 = RECORDcreate((char *)"Ezequiel Sch", (char *)"80");
+
+    STinsert(&head, item1, &H, M);
+    printf("H = %i\n", H);
+    STinsert(&head, item2, &H, M);
+    printf("H = %i\n", H);
+    STinsert(&head, item3, &H, M);
+    printf("H = %i\n", H);
+    STinsert(&head, item4, &H, M);
+    printf("H = %i\n", H);
+
+    printf("\nPesquisa por Ezequiel Sch:\n");
+    Record searchRecord = searchR(head, (char *)"Ezequiel Sch", H);
+    RECORDprint(searchRecord);
+    printf("\n");
+    // traversal(head);
+
     FILE *fp = fopen("input/basic", "rb");
 
     indexFile(fp);
