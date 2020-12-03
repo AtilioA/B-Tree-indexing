@@ -56,13 +56,15 @@ int main(int argc, char **argv)
 
     // fclose(write_ptr);
 
-    FILE *fp = fopen("input/basic", "r+b");
+    // FILE *fp = fopen("input/basic", "r+b");
 
-    recordSoftDelete(fp, 0);
+    // recordSoftDelete(fp, 0);
 
-    enableRecord(fp, 14);
+    // enableRecord(fp, 14);
 
-    fclose(fp);
+    // // insertRecord(fp, "teste", "bolinha");
+
+    // fclose(fp);
 
     fp = fopen("input/basic", "rb");
 
@@ -80,6 +82,9 @@ int main(int argc, char **argv)
     RECORDprint(x);
     RECORDfree(x);
     x = getRecordOnPos(fp, 28);
+    RECORDprint(x);
+    RECORDfree(x);
+    x = getRecordOnPos(fp, 54);
     RECORDprint(x);
     RECORDfree(x);
 

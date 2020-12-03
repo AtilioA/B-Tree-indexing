@@ -15,7 +15,7 @@ struct Block
 
 typedef struct Block Block;
 
-void writerecord(char* id, char* value, int enable, FILE* f){
+void writeRecord(char* id, char* value, int enable, FILE* f){
     int n = strlen(id)+strlen(value)+1;
     char v=',';
     fwrite(&n,4,1,f);//4 bytes com value de ’n’
@@ -107,7 +107,7 @@ int transcribeRecords(Block block, long fileSeek){ // por enquanto só printa a 
 
         // Segunda checagem de registro incompleto
         if((block.size - i - 5 - n) < 0){
-            return abs(block.size - i - 5 - n);
+            return abs(block.size - i);
         }
 
         Item recordIdx = malloc(sizeof(struct index));
@@ -261,4 +261,14 @@ void enableRecord(FILE *fp, long int fileIndex){
     }
 
     changeRecordState(fp, fileIndex, 1);
+}
+
+long int insertRecord(FILE *fp, char *id, char *value){
+    fseek(fp, 0L, SEEK_END);
+
+    long int recordSeek = ftell(fp) + 1;
+
+    writeRecord(id, value, 1, fp);
+
+    return recordSeek;
 }

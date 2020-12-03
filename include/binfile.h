@@ -5,7 +5,7 @@ typedef struct record* Record;
 
 typedef struct Block Block;
 
-void writerecord(char* id, char* value, int enable, FILE* f);
+void writeRecord(char* id, char* value, int enable, FILE* f);
 
 void indexFile(FILE *fp);
 
@@ -16,6 +16,8 @@ Record getRecordOnPos(FILE *fp, long int fileIndex);
 void recordSoftDelete(FILE *fp, long int fileIndex);
 
 void enableRecord(FILE *fp, long int fileIndex);
+
+long int insertRecord(FILE *fp, char *id, char *value);
 
 #endif
 
