@@ -15,6 +15,8 @@ Record RECORDget(FILE *fp, long int fileIndex);
 
 void RECORDprint(Record x);
 
+void RECORDprintToFile(Record x, FILE *fp);
+
 typedef char *Key;
 struct index
 {

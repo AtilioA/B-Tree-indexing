@@ -42,3 +42,9 @@ void RECORDprint(Record x){
         printf("%s: %s\n", x->id, x->value);
     }
 }
+
+void RECORDprintToFile(Record x, FILE *fp){
+    if((x != NULL) && (fp != NULL)){
+        fprintf(fp, "%s: %s\n", x->id, x->value);
+    }
+}
