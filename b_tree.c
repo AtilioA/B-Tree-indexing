@@ -46,31 +46,31 @@ void STinit(ST_Node **head, int *H, int M)
 
 Record searchR(ST_Node *head, Key v, int H)
 {
-    printf("searchR\n");
+    // printf("searchR\n");
     int j = 0;
     if (H == 0)
     {
-        printf("\tH == 0\n");
-        printf("\tj (%i) < head->size (%i)\n", j, head->size);
+        // printf("\tH == 0\n");
+        // printf("\tj (%i) < head->size (%i)\n", j, head->size);
         for (j = 0; j < head->size; j++)
         {
-            printf("\teq(v, head->entry[j].key)\n");
+            // printf("\teq(v, head->entry[j].key)\n");
             if (eq(v, head->entry[j].key))
             {
-                printf("\t\tVAPO\n");
+                // printf("\t\tVAPO\n");
                 return head->entry[j].item;
             }
         }
     }
     if (H != 0)
     {
-        printf("\tH != 0\n");
+        // printf("\tH != 0\n");
         for (j = 0; j < head->size; j++)
         {
-            printf("\tj < head->size (%i)\n", head->size);
+            // printf("\tj < head->size (%i)\n", head->size);
             if ((j + 1 == head->size) || less(v, head->entry[j + 1].key))
             {
-                printf("\t\tVAPO\n");
+                // printf("\t\tVAPO\n");
                 return searchR(head->entry[j].next, v, H - 1);
             }
         }
@@ -78,18 +78,18 @@ Record searchR(ST_Node *head, Key v, int H)
     return NULL;
 }
 
-ST_Node *split(ST_Node *h, int M)
+ST_Node *split(ST_Node **h, int M)
 {
     int j;
     ST_Node *t = createLink(M);
     for (j = 0; j < M / 2; j++)
-        t->entry[j] = h->entry[M / 2 + j];
-    h->size = M / 2;
+        t->entry[j] = (*h)->entry[M / 2 + j];
+    (*h)->size = M / 2;
     t->size = M / 2;
     return t;
 }
 
-ST_Node *insertR(ST_Node *h, Record item, int *H, int M)
+ST_Node *insertR(ST_Node **head, Record item, int *H, int M)
 {
     int i, j;
     Key v = key(item);
@@ -102,23 +102,23 @@ ST_Node *insertR(ST_Node *h, Record item, int *H, int M)
     if (*H == 0)
     {
         // printf("H == 0\n");
-        for (j = 0; j < h->size; j++)
+        for (j = 0; j < (*head)->size; j++)
         {
             // printf("\tFOR\n");
-            if (less(v, h->entry[j].key))
+            if (less(v, (*head)->entry[j].key))
             {
-                // printf("less(v, h->entry[j].key)\n");
+                // printf("less(v, head->entry[j].key)\n");
 
                 break;
             }
         }
     }
     if (*H != 0)
-        for (j = 0; j < h->size; j++)
-            if ((j + 1 == h->size) || less(v, h->entry[j + 1].key))
+        for (j = 0; j < (*head)->size; j++)
+            if ((j + 1 == (*head)->size) || less(v, (*head)->entry[j + 1].key))
             {
-                t = h->entry[j++].next;
-                u = insertR(t, item, H - 1, M);
+                t = (*head)->entry[j++].next;
+                u = insertR(&t, item, H - 1, M);
                 if (u == NULL)
                     return NULL;
                 x.key = u->entry[0].key;
@@ -126,16 +126,16 @@ ST_Node *insertR(ST_Node *h, Record item, int *H, int M)
                 break;
             }
 
-    for (i = (h->size)++; i > j; i--)
-        h->entry[i] = h->entry[i - 1];
-    h->entry[j] = x;
-    if (h->size < M)
+    for (i = ((*head)->size)++; i > j; i--)
+        (*head)->entry[i] = (*head)->entry[i - 1];
+    (*head)->entry[j] = x;
+    if ((*head)->size < M)
         return NULL;
     else
-        return split(h, M);
+        return split(head, M);
 }
 
-void STinsert(ST_Node *head, Record item, int *H, int M)
+void STinsert(ST_Node **head, Record item, int *H, int M)
 {
     ST_Node *t, *u = insertR(head, item, H, M);
     printf("INSERTEI\n");
@@ -147,12 +147,12 @@ void STinsert(ST_Node *head, Record item, int *H, int M)
     t = createLink(M);
     t->size = 2;
 
-    t->entry[0].key = head->entry[0].key;
-    t->entry[0].next = head;
+    t->entry[0].key = (*head)->entry[0].key;
+    t->entry[0].next = (*head);
     t->entry[1].key = u->entry[0].key;
     t->entry[1].next = u;
 
-    head = t;
+    (*head) = t;
     (*H)++;
 }
 
@@ -176,7 +176,7 @@ void traversal(ST_Node *head)
 
 int main()
 {
-    int M = 4, H = 0; // M - argv()
+    int M = 10, H = 0; // M - argv()
     ST_Node *head = NULL;
     STinit(&head, &H, M);
     // printf("%ld\n", head->size);
@@ -185,19 +185,30 @@ int main()
     Record item2 = RECORDcreate("124", "6");
     Record item3 = RECORDcreate("Ezequiel", "8");
     Record item4 = RECORDcreate("126", "9");
-    // RECORDprint(item);
+    Record item5 = RECORDcreate("120", "5");
+    Record item6 = RECORDcreate("128", "6");
+    Record item7 = RECORDcreate("Ezequiel Sch", "80");
+    Record item8 = RECORDcreate("126", "9");
 
-    STinsert(head, item1, &H, M);
-    // printf("H = %i\n", H);
-    STinsert(head, item2, &H, M);
-    // printf("H = %i\n", H);
-    STinsert(head, item3, &H, M);
-    // printf("H = %i\n", H);
-    STinsert(head, item4, &H, M);
-    // printf("H = %i\n", H);
+    STinsert(&head, item1, &H, M);
+    printf("H = %i\n", H);
+    STinsert(&head, item2, &H, M);
+    printf("H = %i\n", H);
+    STinsert(&head, item3, &H, M);
+    printf("H = %i\n", H);
+    STinsert(&head, item4, &H, M);
+    printf("H = %i\n", H);
+    STinsert(&head, item5, &H, M);
+    printf("H = %i\n", H);
+    STinsert(&head, item6, &H, M);
+    printf("H = %i\n", H);
+    STinsert(&head, item7, &H, M);
+    printf("H = %i\n", H);
+    STinsert(&head, item8, &H, M);
+    printf("H = %i\n", H);
 
     // traversal(head);
-    Record searchRecord = searchR(head, "Ezequiel", H);
+    Record searchRecord = searchR(head, "Ezequiel Sch", H);
     RECORDprint(searchRecord);
 
     // printf("Hello, World!\n");
