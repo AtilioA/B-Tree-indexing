@@ -221,3 +221,26 @@ Record getRecordOnPos(FILE *fp, long int fileIndex){
 
     return new;
 }
+
+// Essa função precisa que o fp seja aberto em modo "r+b"
+void softDelete(FILE *fp, long int fileIndex){
+    if(fp == NULL){
+        printf("NULL file pointer on function softDelete");
+        exit(1);
+    }
+
+    long int targetPos = fileIndex + 4;
+
+    Block block = readBlockOnPos(fp, targetPos);
+
+    int active = (int)((unsigned char)(block.bytes[0]));
+
+    free(block.bytes);
+
+    if(active){
+        fseek(fp, targetPos, SEEK_SET);
+        int enable = 0;
+        fwrite(&enable,1,1,fp);//Esse registro e valido
+    }
+    
+}

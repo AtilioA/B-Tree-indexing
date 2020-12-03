@@ -13,5 +13,7 @@ Record getRecordOnBlock(Block block, long int posStart);
 
 Record getRecordOnPos(FILE *fp, long int fileIndex);
 
+void softDelete(FILE *fp, long int fileIndex);
+
 #endif
 

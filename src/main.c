@@ -77,5 +77,11 @@ int main(int argc, char **argv)
 
     fclose(fp);
 
+    // fp = fopen("input/basic", "r+b");
+
+    // softDelete(fp, 14);
+
+    // fclose(fp);
+
     return EXIT_SUCCESS;
 }
