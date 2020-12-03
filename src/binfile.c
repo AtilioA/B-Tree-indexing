@@ -266,7 +266,7 @@ void enableRecord(FILE *fp, long int fileIndex){
 long int insertRecord(FILE *fp, char *id, char *value){
     fseek(fp, 0L, SEEK_END);
 
-    long int recordSeek = ftell(fp) + 1;
+    long int recordSeek = ftell(fp);
 
     writeRecord(id, value, 1, fp);
 
