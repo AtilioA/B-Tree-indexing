@@ -56,7 +56,15 @@ int main(int argc, char **argv)
 
     // fclose(write_ptr);
 
-    FILE *fp = fopen("input/basic", "rb");
+    FILE *fp = fopen("input/basic", "r+b");
+
+    recordSoftDelete(fp, 0);
+
+    enableRecord(fp, 14);
+
+    fclose(fp);
+
+    fp = fopen("input/basic", "rb");
 
     indexFile(fp);
 
@@ -76,12 +84,6 @@ int main(int argc, char **argv)
     RECORDfree(x);
 
     fclose(fp);
-
-    // fp = fopen("input/basic", "r+b");
-
-    // softDelete(fp, 14);
-
-    // fclose(fp);
 
     return EXIT_SUCCESS;
 }
