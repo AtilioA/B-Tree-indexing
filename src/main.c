@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 
     // fclose(fp);
 
-    fp = fopen("input/basic", "rb");
+    FILE *fp = fopen("input/basic", "rb");
 
     indexFile(fp);
 
