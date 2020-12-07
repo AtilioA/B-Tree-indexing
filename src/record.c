@@ -4,6 +4,13 @@
 #include "../include/record.h"
 #include "../include/binfile.h"
 
+Item ITEMcreate(char *id, long pos){
+    Item new = malloc(sizeof(struct index));
+    new->id = id;
+    new->fileIndex = pos;
+    return new;
+}
+
 void ITEMfree(Item x){
     if(x != NULL){
         if(x->id != NULL){

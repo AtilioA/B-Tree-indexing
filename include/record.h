@@ -2,6 +2,7 @@
 #define __RECORD_H
 
 #include <string.h>
+#include <stdio.h>
 
 struct record
 {
@@ -28,6 +29,8 @@ struct index
     long int fileIndex;
 };
 typedef struct index *Item;
+
+Item ITEMcreate(char *id, long pos);
 
 int ITEMscan(Key *);
 
