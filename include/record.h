@@ -44,7 +44,7 @@ void ITEMprint(Item x);
 #define key(A) (A->id)
 #define num(A) (A->fileIndex)
 
-#define eq(A, B) (strcmp(A, B) == 0)
-#define less(A, B) (strcmp(A, B) < 0)
+// #define eq(A, B) (strcmp(A, B) == 0)
+// #define less(A, B) (strcmp(A, B) < 0)
 
 #endif
