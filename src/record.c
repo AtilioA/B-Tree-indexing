@@ -22,6 +22,14 @@ void ITEMfree(Item x){
     }
 }
 
+void ITEMprint(Item x){
+    if(x == NULL){
+        printf("Null item\n");
+    }else{
+        printf("%s %ld\n", x->id, x->fileIndex);
+    }
+}
+
 Record RECORDcreate(char *id, char *value){
     Record new = malloc(sizeof(struct record));
     new->id = id;

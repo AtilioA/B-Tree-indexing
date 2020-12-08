@@ -217,9 +217,9 @@ int main()
     // STinsert(&head, item8, &H, M);
     // printf("H = %i\n", H);
 
-    traversal(head);
-    // Item result = searchR(head, "Ezequiel Sch", H);
-    // RECORDprint(searchRecord);
+    // traversal(head);
+    Item result = searchR(head, "giropasd", H);
+    ITEMprint(result);
 
     // freeLink(head);
 

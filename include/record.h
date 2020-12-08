@@ -38,6 +38,8 @@ void ITEMshow(Item);
 
 void ITEMfree(Item);
 
+void ITEMprint(Item x);
+
 #define NULLitem NULL
 #define key(A) (A->id)
 #define num(A) (A->fileIndex)
