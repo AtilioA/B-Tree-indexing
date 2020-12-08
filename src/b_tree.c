@@ -124,7 +124,7 @@ Link STinsert(Item item, Link head){
 void freeR(Link head, int H){
     if (H == 0){
         for(int i = 0; i < head->m; i++){
-            freeItem(head->b[i].ref.item);
+            ITEMfree(head->b[i].ref.item);
         }
         free(head->b);
         free(head);
@@ -137,33 +137,44 @@ void freeR(Link head, int H){
     }
 }
 
-void runR(Link head, int H, void (*callItem)(Item, void*, void*), void* callArg1, void* callArg2){
+void runRPrint(Link head, int H){
     if (H == 0){
         for(int i = 0; i < head->m; i++){
-            callItem(head->b[i].ref.item, callArg1, callArg2);
+            ITEMprint(head->b[i].ref.item);
         }
     }else{
         for(int i = 0; i < head->m; i++){
-            runR(head->b[i].ref.next, H - 1, callItem, callArg1, callArg2);
+            runRPrint(head->b[i].ref.next, H - 1);
         }
     }
 }
+
+// void runR(Link head, int H, void (*callItem)(Item, void*, void*), void* callArg1, void* callArg2){
+//     if (H == 0){
+//         for(int i = 0; i < head->m; i++){
+//             callItem(head->b[i].ref.item, callArg1, callArg2);
+//         }
+//     }else{
+//         for(int i = 0; i < head->m; i++){
+//             runR(head->b[i].ref.next, H - 1, callItem, callArg1, callArg2);
+//         }
+//     }
+// }
 
 void freeST(Link head){
     freeR(head, head->H);
 }
 
-void runST(Link head, void (*callItem)(Item, void*, void*), void* callArg1, void* callArg2){
-    runR(head, head->H, callItem, callArg1, callArg2);
-}
+// void runST(Link head, void (*callItem)(Item, void*, void*), void* callArg1, void* callArg2){
+//     runR(head, head->H, callItem, callArg1, callArg2);
+// }
 
 
 int main()
 {
-    int M = 4, H = 0; // M - argv()
-    ST_Node *head = NULL;
-    STinit(&head, &H, M);
-    // printf("%ld\n", head->size);
+    int M = 4;
+    Link head = STinit(M);
+    printf("%ld\n", head->m);
 
     Item item1 = ITEMcreate("BLABLA", 1);
     Item item2 = ITEMcreate("bolinha", 546);
@@ -171,28 +182,45 @@ int main()
     Item item4 = ITEMcreate("desgraca", 100);
     Item item5 = ITEMcreate("pexie", 250);
 
-    STinsert(&head, item1, &H, M);
-    printf("H = %i\n", H);
-    STinsert(&head, item2, &H, M);
-    printf("H = %i\n", H);
-    STinsert(&head, item3, &H, M);
-    printf("H = %i\n", H);
-    STinsert(&head, item4, &H, M);
-    printf("H = %i\n", H);
-    STinsert(&head, item5, &H, M);
-    printf("H = %i\n", H);
-    // STinsert(&head, item6, &H, M);
-    // printf("H = %i\n", H);
-    // STinsert(&head, item7, &H, M);
-    // printf("H = %i\n", H);
-    // STinsert(&head, item8, &H, M);
-    // printf("H = %i\n", H);
+    // head = STinsert(item1, head);
+    // printf("H = %i\n", head->H);
+    // head = STinsert(item2, head);
+    // printf("H = %i\n", head->H);
+    // head = STinsert(item3, head);
+    // printf("H = %i\n", head->H);
+    // head = STinsert(item4, head);
+    // printf("H = %i\n", head->H);
+    // head = STinsert(item5, head);
+    // printf("H = %i\n", head->H);
 
-    // traversal(head);
-    Item result = searchR(head, "giropasd", H);
-    ITEMprint(result);
+    // // Item result = STsearch("giropasd", head);
+    // // ITEMprint(result);
 
-    // freeLink(head);
+    // runRPrint(head, head->H);
+
+    // freeST(head);
+
+    // STinsert(&head, item1, &H, M);
+    // STinsert(&head, item2, &H, M);
+    // printf("H = %i\n", H);
+    // STinsert(&head, item3, &H, M);
+    // printf("H = %i\n", H);
+    // STinsert(&head, item4, &H, M);
+    // printf("H = %i\n", H);
+    // STinsert(&head, item5, &H, M);
+    // printf("H = %i\n", H);
+    // // STinsert(&head, item6, &H, M);
+    // // printf("H = %i\n", H);
+    // // STinsert(&head, item7, &H, M);
+    // // printf("H = %i\n", H);
+    // // STinsert(&head, item8, &H, M);
+    // // printf("H = %i\n", H);
+
+    // // traversal(head);
+    // Item result = searchR(head, "giropasd", H);
+    // ITEMprint(result);
+
+    // // freeLink(head);
 
     return 0;
 }
