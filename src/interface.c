@@ -76,7 +76,7 @@ void startInterfaceLoop(char *filePath, Link *head)
 
                 Item newIndex = STsearch(id, *head);
 
-                if((newIndex != NULL) && (ITEMisActive(newIndex))){
+                if((newIndex != NULL) && (newIndex->active)){
                     FILE *fp = fopen(filePath, "rb");
                     Record x = getRecordOnPos(fp, newIndex->fileIndex);
                     RECORDprint(x);

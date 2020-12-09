@@ -41,10 +41,6 @@ void ITEMfree(Item);
 
 void ITEMprint(Item x);
 
-long int ITEMgetPos(Item x);
-
-int ITEMisActive(Item x);
-
 #define NULLitem NULL
 #define key(A) (A->id)
 #define num(A) (A->fileIndex)

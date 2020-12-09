@@ -212,8 +212,8 @@ Record getRecordOnPos(FILE *fp, long int fileIndex){
 
 // Apenas se o registro for existente ou ativo.
 void outputRecordFromItem(Item x, FILE *fp, FILE *out){
-    if (ITEMisActive(x)){
-        Record result = getRecordOnPos(fp, ITEMgetPos(x));
+    if (x->active){
+        Record result = getRecordOnPos(fp, x->fileIndex);
 
         RECORDprintToFile(result, out);
 

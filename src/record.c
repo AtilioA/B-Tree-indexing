@@ -31,18 +31,6 @@ void ITEMprint(Item x){
     }
 }
 
-long int ITEMgetPos(Item x){
-    if(x == NULL){
-        printf("Null item\n");
-    }else{
-        return x->fileIndex;
-    }
-}
-
-int ITEMisActive(Item x){
-    return x->active;
-}
-
 Record RECORDcreate(char *id, char *value){
     Record new = malloc(sizeof(struct record));
     new->id = id;
