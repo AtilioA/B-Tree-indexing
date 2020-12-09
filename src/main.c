@@ -21,7 +21,11 @@ int main(int argc, char **argv)
 
     FILE *fp = fopen(binPath, "rb");
 
-    indexFile(fp, &head);
+    if(fp != NULL){
+        indexFile(fp, &head);
+    }else{
+        fp = fopen(binPath, "wb");
+    }
 
     fclose(fp);
 
