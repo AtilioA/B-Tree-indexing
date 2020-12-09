@@ -6,7 +6,7 @@
 #include "../include/binfile.h"
 #include "../include/record.h"
 #include "../include/b_tree.h"
-#define MAXBLOCKSIZE 30 //lembrar de trocar essa porra pelo amor de deus
+#define MAXBLOCKSIZE 5001
 
 struct Block
 {
