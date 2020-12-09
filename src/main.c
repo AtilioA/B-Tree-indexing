@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "../include/utils.h"
 #include "../include/interface.h"
 #include "../include/b_tree.h"
 #include "../include/binfile.h"
