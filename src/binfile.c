@@ -16,6 +16,7 @@ struct Block
 
 typedef struct Block Block;
 
+// Escreve um registro no arquivo
 void writeRecord(char* id, char* value, int enable, FILE* f){
     int n = strlen(id)+strlen(value)+1;
     char v=',';
@@ -26,6 +27,7 @@ void writeRecord(char* id, char* value, int enable, FILE* f){
     fwrite(value,1,strlen(value),f);//Escreve o valor
 }
 
+// Determina o tamanho do arquivo em bytes
 int fileSize(FILE *fp){
     if(fp == NULL){
         return -1;
@@ -39,8 +41,10 @@ int fileSize(FILE *fp){
 }
 
 
-/** Se num for menor que o tamanho máximo do bloco,
-     * então o tamanho do bloco será num **/
+/** 
+ * Se num for menor que o tamanho máximo do bloco,
+ * então o tamanho do bloco será num 
+ * Caso contário valerá o tamanho máximo**/
 long int newBlockSize(long int num){
     if(num < MAXBLOCKSIZE){
         return num;
@@ -49,6 +53,10 @@ long int newBlockSize(long int num){
     }
 }
 
+/**
+ * Retorna a id de um registro dado um bloco, posição inicial e posição final
+ * Retorna a string da posição inicial até chegar na vírgula (ignorando ela)
+ **/
 char *getId(Block block, int posStart, int maxSize){
     // Conta o tamanho do id
     int size = 0;
@@ -70,6 +78,10 @@ char *getId(Block block, int posStart, int maxSize){
     return id;
 }
 
+/**
+ * Retorna a string dada no intervalo posStart | postStart + maxSize
+ * Usada para retornar o valor de um registro
+ **/
 char *getValue(Block block, int posStart, int maxSize){
     // Conta o tamanho do value
     char *value = malloc(sizeof(char) * (maxSize + 1));
@@ -121,6 +133,9 @@ int transcribeRecords(Block block, long fileSeek, Link *head){ // por enquanto s
     
 }
 
+/**
+ * Lê um bloco do arquivo retornando o objeto com conteúdo lido e o tamanho do bloco
+ **/
 Block readBlock(FILE *fp){
     if(fp == NULL){
         printf("NULL file pointer on function readBlock");
@@ -172,6 +187,10 @@ void indexFile(FILE *fp, Link *head){
 
 }
 
+/**
+ * Ajusta o apontador do arquivo para a posição desejada e depois
+ * retorna o bloco lido a partir dali
+**/
 Block readBlockOnPos(FILE *fp, long int pos){
     if(fp == NULL){
         printf("NULL file pointer on function readBlockOnPos");
@@ -184,6 +203,10 @@ Block readBlockOnPos(FILE *fp, long int pos){
 
 }
 
+/**
+ * Retorna o primeiro registro de um bloco
+ * a partir de uma posição inicial
+ **/
 Record getRecordOnBlock(Block block, long int posStart){
     int i = posStart;
     
@@ -200,6 +223,9 @@ Record getRecordOnBlock(Block block, long int posStart){
 
 }
 
+/**
+ * Retorna o primeiro registro a partir da posição desejada no arquivo
+ **/
 Record getRecordOnPos(FILE *fp, long int fileIndex){
     Block block = readBlockOnPos(fp, fileIndex);
 
@@ -210,7 +236,10 @@ Record getRecordOnPos(FILE *fp, long int fileIndex){
     return new;
 }
 
-// Apenas se o registro for existente ou ativo.
+/**
+ * Procura o registro no arquivo baseado na posição dada no Item
+ * depois escreve o registro em um arquivo de texto
+ */
 void outputRecordFromItem(Item x, FILE *fp, FILE *out){
     if (x->active){
         Record result = getRecordOnPos(fp, x->fileIndex);
@@ -221,6 +250,7 @@ void outputRecordFromItem(Item x, FILE *fp, FILE *out){
     }
 }
 
+// Muda no arquivo o estado do registro dado a sua posição
 // Essa função precisa que o fp seja aberto em modo "r+b"
 void changeRecordState(FILE *fp, long int fileIndex, int state){
     
@@ -230,6 +260,7 @@ void changeRecordState(FILE *fp, long int fileIndex, int state){
     }
 }
 
+// Dado a posição no arquivo, retorna o estado do registro
 int getRecordState(FILE *fp, long int fileIndex){
     if(fp == NULL){
         printf("NULL file pointer on function getRecordState");
@@ -245,6 +276,7 @@ int getRecordState(FILE *fp, long int fileIndex){
     return state;
 }
 
+// Dado a posição do registro no arquivo, desativa o registro
 // Essa função precisa que o fp seja aberto em modo "r+b"
 void recordSoftDelete(FILE *fp, long int fileIndex){
     if(fp == NULL){
@@ -255,6 +287,7 @@ void recordSoftDelete(FILE *fp, long int fileIndex){
     changeRecordState(fp, fileIndex, 0);
 }
 
+// Dado id e valor, insere um novo registro no final do arquivo
 long int insertRecord(FILE *fp, char *id, char *value){
     fseek(fp, 0L, SEEK_END);
 
