@@ -6,7 +6,7 @@
 #include "../include/binfile.h"
 #include "../include/record.h"
 #include "../include/b_tree.h"
-#define MAXSTRSIZE 5000
+#define MAXSTRSIZE 4200
 
 void removeNewLine(char *str)
 {
@@ -40,15 +40,24 @@ char **readCommand()
         if (tokBuffer != NULL)
         {
             removeNewLine(tokBuffer);
-            commandData[i] = tokBuffer;
+            commandData[i] = malloc(sizeof(char) * strlen(tokBuffer));
+            strcpy(commandData[i], tokBuffer);
         }
         else
         {
-            commandData[i] = (char *)("\0");
+            commandData[i] = malloc(sizeof(char));
+            commandData[i][0] = '\0';
         }
     }
 
     return commandData;
+}
+
+void freeCommands(char **x){
+    for(int i = 0; i<3; i++){
+        free(x[i]);
+    }
+    free(x);
 }
 
 void startInterfaceLoop(char *filePath, Link *head)
@@ -75,7 +84,7 @@ void startInterfaceLoop(char *filePath, Link *head)
                     fclose(fp);
                 }
             }
-            free(commandData);
+            freeCommands(commandData);
         }
         else if (strcasecmp(command, "INSERT") == 0)
         {
@@ -86,10 +95,9 @@ void startInterfaceLoop(char *filePath, Link *head)
 
                 Item newIndex = STsearch(id, *head);
 
-                // se não existir 
                 if(newIndex == NULL){
                     newIndex = malloc(sizeof(struct index)); 
-                    newIndex->fileIndex = insertRecord(fp, id, value); // insere no final do arquivo e adiciona o indice
+                    newIndex->fileIndex = insertRecord(fp, id, value); 
                     newIndex->id = malloc(sizeof(char) * strlen(id) + 1); 
                     newIndex->active = 1;
                     strcpy(newIndex->id, id);
@@ -105,7 +113,7 @@ void startInterfaceLoop(char *filePath, Link *head)
                 
                 fclose(fp);
             }
-            free(commandData);
+            freeCommands(commandData);
         }
         else if (strcasecmp(command, "DELETE") == 0)
         {
@@ -122,7 +130,7 @@ void startInterfaceLoop(char *filePath, Link *head)
                 }
 
             }
-            free(commandData);
+            freeCommands(commandData);
         }
         else if (strcasecmp(command, "RUNDOWN") == 0)
         {
@@ -135,17 +143,17 @@ void startInterfaceLoop(char *filePath, Link *head)
             }else{
                 printf("Falta 1 argumento no comando RUNDOWN\n");
             }
-            free(commandData);
+            freeCommands(commandData);
         }
         else if (strcasecmp(command, "STOP") == 0)
         {
             printf("Finalizando...\n");
-            free(commandData);
+            freeCommands(commandData);
             return;
         }
         else
         {
-            free(commandData);
+            freeCommands(commandData);
             printf("Comando desconhecido. Tente novamente\n");
         }
     }
