@@ -37,7 +37,3 @@ val: all
 
 full: all
 	- valgrind -v --leak-check=full ./$(EXECUTABLE) $(PROGARGS)
-
-btree: clean
-	rm btree || true
-	gcc src/record.c include/record.h src/b_tree.c include/b_tree.h -o btree -g

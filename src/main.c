@@ -28,32 +28,7 @@ int main(int argc, char **argv)
 
     startInterfaceLoop(binPath, &head);
 
-    // FILE *out = fopen("output", "w");
-
-    // runST(head, outputRecordFromItem, fp, out);
-
-    // fclose(out);
-
     freeST(head);
-
-    // Record x = NULL;
-
-    // x = getRecordOnPos(fp, 41);
-    // RECORDprint(x);
-    // RECORDfree(x);
-    // x = getRecordOnPos(fp, 0);
-    // RECORDprint(x);
-    // RECORDfree(x);
-    // x = getRecordOnPos(fp, 14);
-    // RECORDprint(x);
-    // RECORDfree(x);
-    // x = getRecordOnPos(fp, 28);
-    // RECORDprint(x);
-    // RECORDfree(x);
-    // // x = getRecordOnPos(fp, 54);
-    // // RECORDprint(x);
-    // RECORDfree(x);
-
 
     return EXIT_SUCCESS;
 }
