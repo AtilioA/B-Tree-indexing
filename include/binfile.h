@@ -2,12 +2,12 @@
 #ifndef __BINFILE_H
 #define __BINFILE_H
 
-typedef struct record* Record;
+typedef struct record *Record;
 
 typedef struct Block Block;
 
 // Escreve um registro no arquivo
-void writeRecord(char* id, char* value, int enable, FILE* f);
+void writeRecord(char *id, char *value, int enable, FILE *f);
 
 // Varre o arquivo e insere a posição e o id de cada registro na árvore de busca
 void indexFile(FILE *fp, Link *head);
@@ -40,4 +40,3 @@ long int insertRecord(FILE *fp, char *id, char *value);
 void outputRecordFromItem(Item x, FILE *fp, FILE *out);
 
 #endif
-

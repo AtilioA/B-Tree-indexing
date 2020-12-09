@@ -17,19 +17,22 @@ struct Block
 
 typedef struct Block Block;
 
-void writeRecord(char* id, char* value, int enable, FILE* f){
-    int n = strlen(id)+strlen(value)+1;
-    char v=',';
-    fwrite(&n,4,1,f); // 4 bytes com value de ’n’
-    fwrite(&enable,1,1,f); // Esse registro e valido
-    fwrite(id,1,strlen(id),f); // Escreve identificador
-    fwrite(&v,1,1,f); // Escreve a virgula
-    fwrite(value,1,strlen(value),f); // Escreve o valor
+void writeRecord(char *id, char *value, int enable, FILE *f)
+{
+    int n = strlen(id) + strlen(value) + 1;
+    char v = ',';
+    fwrite(&n, 4, 1, f);                // 4 bytes com value de ’n’
+    fwrite(&enable, 1, 1, f);           // Esse registro e valido
+    fwrite(id, 1, strlen(id), f);       // Escreve identificador
+    fwrite(&v, 1, 1, f);                // Escreve a virgula
+    fwrite(value, 1, strlen(value), f); // Escreve o valor
 }
 
 // Determina o tamanho do arquivo em bytes
-int fileSize(FILE *fp){
-    if(fp == NULL){
+int fileSize(FILE *fp)
+{
+    if (fp == NULL)
+    {
         return -1;
     }
     int previousSeek = ftell(fp);
@@ -40,16 +43,19 @@ int fileSize(FILE *fp){
     return fSize;
 }
 
-
 /** 
  * Se num for menor que o tamanho máximo do bloco,
  * então o tamanho do bloco será num 
  * Caso contário valerá o tamanho máximo
  **/
-long int newBlockSize(long int num){
-    if(num < MAXBLOCKSIZE){
+long int newBlockSize(long int num)
+{
+    if (num < MAXBLOCKSIZE)
+    {
         return num;
-    }else{
+    }
+    else
+    {
         return MAXBLOCKSIZE;
     }
 }
@@ -58,23 +64,27 @@ long int newBlockSize(long int num){
  * Retorna a id de um registro dado um bloco, posição inicial e posição final
  * Retorna a string da posição inicial até chegar na vírgula (ignorando ela)
  **/
-char *getId(Block block, int posStart, int maxSize){
+char *getId(Block block, int posStart, int maxSize)
+{
     // Conta o tamanho do id
     int size = 0;
-    for (int i = posStart; size < maxSize; i++, size++){
+    for (int i = posStart; size < maxSize; i++, size++)
+    {
         char token = (char)((unsigned char)block.bytes[i]);
-        if(token == ','){
+        if (token == ',')
+        {
             break;
         }
     }
 
     char *id = malloc(sizeof(char) * (size + 1));
 
-    for (int i = posStart, c = 0; c < size ; i++, c++){
+    for (int i = posStart, c = 0; c < size; i++, c++)
+    {
         char letter = (char)((unsigned char)block.bytes[i]);
         id[c] = letter;
     }
-    id[size] = '\0' ;
+    id[size] = '\0';
 
     return id;
 }
@@ -83,15 +93,17 @@ char *getId(Block block, int posStart, int maxSize){
  * Retorna a string dada no intervalo posStart | postStart + maxSize
  * Usada para retornar o valor de um registro
  **/
-char *getValue(Block block, int posStart, int maxSize){
+char *getValue(Block block, int posStart, int maxSize)
+{
     // Conta o tamanho do value
     char *value = malloc(sizeof(char) * (maxSize + 1));
 
-    for (int i = posStart, c = 0; c < maxSize ; i++, c++){
+    for (int i = posStart, c = 0; c < maxSize; i++, c++)
+    {
         char letter = (char)((unsigned char)block.bytes[i]);
         value[c] = letter;
     }
-    value[maxSize] = '\0' ;
+    value[maxSize] = '\0';
 
     return value;
 }
@@ -102,83 +114,93 @@ char *getValue(Block block, int posStart, int maxSize){
  * Retorna a quantidade de bytes a serem recuados, caso exista
  * um registro incompleto
  **/
-int transcribeRecords(Block block, long fileSeek, Link *head){
+int transcribeRecords(Block block, long fileSeek, Link *head)
+{
     int n = 0;
-    for (int i = 0; i < block.size; i += 5+n){
+    for (int i = 0; i < block.size; i += 5 + n)
+    {
         // primeira checagem de registro incompleto
-        if((block.size - i) < 8){
+        if ((block.size - i) < 8)
+        {
             return abs(block.size - i);
         }
 
         n = (int)((unsigned char)(block.bytes[i + 3]) << 24 |
-            (unsigned char)(block.bytes[i + 2]) << 16 |
-            (unsigned char)(block.bytes[i + 1]) << 8 |
-            (unsigned char)(block.bytes[i]));
+                  (unsigned char)(block.bytes[i + 2]) << 16 |
+                  (unsigned char)(block.bytes[i + 1]) << 8 |
+                  (unsigned char)(block.bytes[i]));
 
         int active = (int)((unsigned char)(block.bytes[i + 4]));
 
         // Segunda checagem de registro incompleto
-        if((block.size - i - 5 - n) < 0){
+        if ((block.size - i - 5 - n) < 0)
+        {
             return abs(block.size - i);
         }
 
         Item recordIdx = ITEMcreate(getId(block, i + 5, n), fileSeek + i, active);
 
         *head = STinsert(recordIdx, *head);
-
     }
 
     return 0;
-    
 }
 
 /**
  * Lê um bloco do arquivo retornando o objeto com conteúdo lido e o tamanho do bloco
  **/
-Block readBlock(FILE *fp){
-    if(fp == NULL){
+Block readBlock(FILE *fp)
+{
+    if (fp == NULL)
+    {
         printf("NULL file pointer on function readBlock");
         exit(1);
     }
-    
+
     long int fSize = fileSize(fp);
     long int blockSize = newBlockSize(fSize - ftell(fp));
 
     unsigned char *buffer = malloc(sizeof(unsigned char) * blockSize);
     Block obj;
     obj.bytes = NULL;
-    
+
     int blocks = fread(buffer, blockSize, 1, fp);
 
-    if(blocks == 1){
+    if (blocks == 1)
+    {
         obj.bytes = buffer;
         obj.size = blockSize;
-    }else{
+    }
+    else
+    {
         free(buffer);
     }
 
     return obj;
 }
 
-
-void indexFile(FILE *fp, Link *head){
-    if(fp == NULL){
+void indexFile(FILE *fp, Link *head)
+{
+    if (fp == NULL)
+    {
         printf("NULL file pointer on function indexFile");
         exit(1);
     }
 
     // Itera até a quantidade de blocos lidos ser 0
-    while(1){
+    while (1)
+    {
         long actualSeek = ftell(fp);
         Block block = readBlock(fp);
 
-        if(block.bytes == NULL){
+        if (block.bytes == NULL)
+        {
             break;
         }
 
         int backSeek = transcribeRecords(block, actualSeek, head);
         free(block.bytes);
-        fseek(fp, backSeek*(-1) ,SEEK_CUR);
+        fseek(fp, backSeek * (-1), SEEK_CUR);
     }
 }
 
@@ -186,24 +208,27 @@ void indexFile(FILE *fp, Link *head){
  * Ajusta o apontador do arquivo para a posição desejada e depois
  * retorna o bloco lido a partir dali
 **/
-Block readBlockOnPos(FILE *fp, long int pos){
-    if(fp == NULL){
+Block readBlockOnPos(FILE *fp, long int pos)
+{
+    if (fp == NULL)
+    {
         printf("NULL file pointer on function readBlockOnPos");
         exit(1);
     }
 
-    fseek(fp, pos, SEEK_SET);    
+    fseek(fp, pos, SEEK_SET);
 
     return readBlock(fp);
 }
 
-Record getRecordOnBlock(Block block, long int posStart){
+Record getRecordOnBlock(Block block, long int posStart)
+{
     int i = posStart;
-    
+
     int n = (int)((unsigned char)(block.bytes[i + 3]) << 24 |
-        (unsigned char)(block.bytes[i + 2]) << 16 |
-        (unsigned char)(block.bytes[i + 1]) << 8 |
-        (unsigned char)(block.bytes[i]));
+                  (unsigned char)(block.bytes[i + 2]) << 16 |
+                  (unsigned char)(block.bytes[i + 1]) << 8 |
+                  (unsigned char)(block.bytes[i]));
 
     char *id = getId(block, i + 5, n);
 
@@ -212,7 +237,8 @@ Record getRecordOnBlock(Block block, long int posStart){
     return RECORDcreate(id, value);
 }
 
-Record getRecordOnPos(FILE *fp, long int fileIndex){
+Record getRecordOnPos(FILE *fp, long int fileIndex)
+{
     Block block = readBlockOnPos(fp, fileIndex);
 
     Record new = getRecordOnBlock(block, 0);
@@ -222,8 +248,10 @@ Record getRecordOnPos(FILE *fp, long int fileIndex){
     return new;
 }
 
-void outputRecordFromItem(Item x, FILE *fp, FILE *out){
-    if (x->active){
+void outputRecordFromItem(Item x, FILE *fp, FILE *out)
+{
+    if (x->active)
+    {
         Record result = getRecordOnPos(fp, x->fileIndex);
 
         RECORDprintToFile(result, out);
@@ -234,16 +262,20 @@ void outputRecordFromItem(Item x, FILE *fp, FILE *out){
 
 // Muda no arquivo o estado do registro dado a sua posição
 // Essa função precisa que o fp seja aberto em modo "r+b"
-void changeRecordState(FILE *fp, long int fileIndex, int state){
-    
-    if(state != getRecordState(fp, fileIndex)){
+void changeRecordState(FILE *fp, long int fileIndex, int state)
+{
+
+    if (state != getRecordState(fp, fileIndex))
+    {
         fseek(fp, fileIndex + 4, SEEK_SET);
-        fwrite(&state,1,1,fp);
+        fwrite(&state, 1, 1, fp);
     }
 }
 
-int getRecordState(FILE *fp, long int fileIndex){
-    if(fp == NULL){
+int getRecordState(FILE *fp, long int fileIndex)
+{
+    if (fp == NULL)
+    {
         printf("NULL file pointer on function getRecordState");
         exit(1);
     }
@@ -257,8 +289,10 @@ int getRecordState(FILE *fp, long int fileIndex){
     return state;
 }
 
-void recordSoftDelete(FILE *fp, long int fileIndex){
-    if(fp == NULL){
+void recordSoftDelete(FILE *fp, long int fileIndex)
+{
+    if (fp == NULL)
+    {
         printf("NULL file pointer on function recordSoftDelete");
         exit(1);
     }
@@ -266,8 +300,8 @@ void recordSoftDelete(FILE *fp, long int fileIndex){
     changeRecordState(fp, fileIndex, 0);
 }
 
-
-long int insertRecord(FILE *fp, char *id, char *value){
+long int insertRecord(FILE *fp, char *id, char *value)
+{
     fseek(fp, 0L, SEEK_END);
 
     long int recordSeek = ftell(fp);

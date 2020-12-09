@@ -3,7 +3,7 @@
 
 #include "record.h"
 
-typedef struct STnode* Link;
+typedef struct STnode *Link;
 
 // Cria um nova árvore B
 Link STinit(int M);
@@ -18,7 +18,7 @@ Item STsearch(Key key, Link head);
 void freeST(Link head);
 
 // Percorre a árvore B e aplica callItem nos itens
-void runST(Link head, void (*callItem)(Item, void*, void*), void* callArg1, void* callArg2);
+void runST(Link head, void (*callItem)(Item, void *, void *), void *callArg1, void *callArg2);
 
 int eq(char *a, char *b);
 int less(char *a, char *b);

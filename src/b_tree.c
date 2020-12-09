@@ -3,15 +3,18 @@
 #include <stdio.h>
 #include "../include/b_tree.h"
 
-typedef struct{
+typedef struct
+{
     Key key;
-    union{
+    union
+    {
         Link next;
         Item item;
     } ref;
 } entry;
 
-struct STnode{
+struct STnode
+{
     int M;
     entry *b;
     int m;
@@ -19,60 +22,68 @@ struct STnode{
     int N;
 };
 
-
-Link NEW(int M){
+Link NEW(int M)
+{
     Link x = malloc(sizeof(struct STnode));
     x->M = M;
-    x->b = malloc(sizeof(entry)* M);
+    x->b = malloc(sizeof(entry) * M);
     x->m = 0;
     return x;
 }
 
-Link STinit(int M){
+Link STinit(int M)
+{
     Link head = NEW(M);
     head->H = 0;
     head->N = 0;
     return head;
 }
 
-int eq(char *a, char *b){
+int eq(char *a, char *b)
+{
     return (strcmp(a, b) == 0);
 }
 
-int less(char *a, char *b){
+int less(char *a, char *b)
+{
     return (strcmp(a, b) < 0);
 }
 
-Item searchR(Link h, Key v, int H){
+Item searchR(Link h, Key v, int H)
+{
     int j;
     if (H == 0)
-        for (j = 0; j < h->m; j++){
+        for (j = 0; j < h->m; j++)
+        {
             if (eq(v, h->b[j].key))
-	            return h->b[j].ref.item;
+                return h->b[j].ref.item;
         }
     if (H != 0)
         for (j = 0; j < h->m; j++)
-            if ((j+1 == h->m) || less(v, h->b[j+1].key))
-	            return searchR(h->b[j].ref.next, v, H-1);
+            if ((j + 1 == h->m) || less(v, h->b[j + 1].key))
+                return searchR(h->b[j].ref.next, v, H - 1);
     return NULLitem;
 }
 
-Item STsearch(Key v, Link head){
+Item STsearch(Key v, Link head)
+{
     return searchR(head, v, head->H);
 }
 
-Link split(Link h){
+Link split(Link h)
+{
     int j;
     Link t = NEW(h->M);
 
-    for (j = 0; j < h->M/2; j++)
-        t->b[j] = h->b[h->M/2+j];
-    h->m = h->M/2;
-    t->m = h->M/2;
+    for (j = 0; j < h->M / 2; j++)
+        t->b[j] = h->b[h->M / 2 + j];
+    h->m = h->M / 2;
+    t->m = h->M / 2;
     return t;
 }
 
-Link insertR(Link h, Item item, int H){
+Link insertR(Link h, Item item, int H)
+{
     int i, j;
     Key v = key(item);
     entry x;
@@ -83,20 +94,21 @@ Link insertR(Link h, Item item, int H){
     if (H == 0)
         for (j = 0; j < h->m; j++)
             if (less(v, h->b[j].key))
-	            break;
+                break;
     if (H != 0)
         for (j = 0; j < h->m; j++)
-            if ((j+1 == h->m) || less(v, h->b[j+1].key)){
-	            t = h->b[j++].ref.next;
-	            u = insertR(t, item, H-1);
-	            if (u == NULL)
-	                return NULL;
-	            x.key = u->b[0].key;
-	            x.ref.next = u;
-	            break;
-	        }
+            if ((j + 1 == h->m) || less(v, h->b[j + 1].key))
+            {
+                t = h->b[j++].ref.next;
+                u = insertR(t, item, H - 1);
+                if (u == NULL)
+                    return NULL;
+                x.key = u->b[0].key;
+                x.ref.next = u;
+                break;
+            }
     for (i = (h->m)++; i > j; i--)
-        h->b[i] = h->b[i-1];
+        h->b[i] = h->b[i - 1];
     h->b[j] = x;
     if (h->m < h->M)
         return NULL;
@@ -104,7 +116,8 @@ Link insertR(Link h, Item item, int H){
         return split(h);
 }
 
-Link STinsert(Item item, Link head){
+Link STinsert(Item item, Link head)
+{
     Link t, u = insertR(head, item, head->H);
 
     if (u == NULL)
@@ -120,16 +133,21 @@ Link STinsert(Item item, Link head){
     return t;
 }
 
-
-void freeR(Link head, int H){
-    if (H == 0){
-        for(int i = 0; i < head->m; i++){
+void freeR(Link head, int H)
+{
+    if (H == 0)
+    {
+        for (int i = 0; i < head->m; i++)
+        {
             ITEMfree(head->b[i].ref.item);
         }
         free(head->b);
         free(head);
-    }else{
-        for(int i = 0; i < head->m; i++){
+    }
+    else
+    {
+        for (int i = 0; i < head->m; i++)
+        {
             freeR(head->b[i].ref.next, H - 1);
         }
         free(head->b);
@@ -137,22 +155,30 @@ void freeR(Link head, int H){
     }
 }
 
-void runR(Link head, int H, void (*callItem)(Item, void*, void*), void* callArg1, void* callArg2){
-    if (H == 0){
-        for(int i = 0; i < head->m; i++){
+void runR(Link head, int H, void (*callItem)(Item, void *, void *), void *callArg1, void *callArg2)
+{
+    if (H == 0)
+    {
+        for (int i = 0; i < head->m; i++)
+        {
             callItem(head->b[i].ref.item, callArg1, callArg2);
         }
-    }else{
-        for(int i = 0; i < head->m; i++){
+    }
+    else
+    {
+        for (int i = 0; i < head->m; i++)
+        {
             runR(head->b[i].ref.next, H - 1, callItem, callArg1, callArg2);
         }
     }
 }
 
-void freeST(Link head){
+void freeST(Link head)
+{
     freeR(head, head->H);
 }
 
-void runST(Link head, void (*callItem)(Item, void*, void*), void* callArg1, void* callArg2){
+void runST(Link head, void (*callItem)(Item, void *, void *), void *callArg1, void *callArg2)
+{
     runR(head, head->H, callItem, callArg1, callArg2);
 }

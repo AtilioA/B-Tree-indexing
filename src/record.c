@@ -4,7 +4,8 @@
 #include "../include/record.h"
 #include "../include/binfile.h"
 
-Item ITEMcreate(char *id, long pos, int active){
+Item ITEMcreate(char *id, long pos, int active)
+{
     Item new = malloc(sizeof(struct index));
     new->id = id;
     new->fileIndex = pos;
@@ -12,9 +13,12 @@ Item ITEMcreate(char *id, long pos, int active){
     return new;
 }
 
-void ITEMfree(Item x){
-    if(x != NULL){
-        if(x->id != NULL){
+void ITEMfree(Item x)
+{
+    if (x != NULL)
+    {
+        if (x->id != NULL)
+        {
             free(x->id);
             x->id = NULL;
         }
@@ -23,28 +27,37 @@ void ITEMfree(Item x){
     }
 }
 
-void ITEMprint(Item x){
-    if(x == NULL){
+void ITEMprint(Item x)
+{
+    if (x == NULL)
+    {
         printf("Null item\n");
-    }else{
+    }
+    else
+    {
         printf("%s %ld\n", x->id, x->fileIndex);
     }
 }
 
-Record RECORDcreate(char *id, char *value){
+Record RECORDcreate(char *id, char *value)
+{
     Record new = malloc(sizeof(struct record));
     new->id = id;
     new->value = value;
     return new;
 }
 
-void RECORDfree(Record x){
-    if(x != NULL){
-        if(x->id != NULL){
+void RECORDfree(Record x)
+{
+    if (x != NULL)
+    {
+        if (x->id != NULL)
+        {
             free(x->id);
             x->id = NULL;
         }
-        if(x->value != NULL){
+        if (x->value != NULL)
+        {
             free(x->value);
             x->value = NULL;
         }
@@ -53,14 +66,18 @@ void RECORDfree(Record x){
     }
 }
 
-void RECORDprint(Record x){
-    if(x != NULL){
+void RECORDprint(Record x)
+{
+    if (x != NULL)
+    {
         printf("%s: %s\n", x->id, x->value);
     }
 }
 
-void RECORDprintToFile(Record x, FILE *fp){
-    if((x != NULL) && (fp != NULL)){
+void RECORDprintToFile(Record x, FILE *fp)
+{
+    if ((x != NULL) && (fp != NULL))
+    {
         fprintf(fp, "%s: %s\n", x->id, x->value);
     }
 }

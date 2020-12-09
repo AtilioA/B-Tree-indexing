@@ -9,9 +9,10 @@
 
 int main(int argc, char **argv)
 {
-    if(argc != 3){
-    	fprintf(stderr, "Quantidade de argumentos invalido\n");
-    	exit(1);
+    if (argc != 3)
+    {
+        fprintf(stderr, "Quantidade de argumentos invalido\n");
+        exit(1);
     }
 
     int M = atoi(argv[1]);
@@ -21,9 +22,12 @@ int main(int argc, char **argv)
 
     FILE *fp = fopen(binPath, "rb");
 
-    if(fp != NULL){
+    if (fp != NULL)
+    {
         indexFile(fp, &head);
-    }else{
+    }
+    else
+    {
         fp = fopen(binPath, "wb");
     }
 
