@@ -146,7 +146,6 @@ void startInterfaceLoop(char *filePath, Link *head)
         }
         else if (strcasecmp(command, "STOP") == 0)
         {
-            printf("Finalizando...\n");
             freeCommands(commandData);
             return;
         }
