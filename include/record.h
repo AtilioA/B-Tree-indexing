@@ -16,8 +16,6 @@ Record RECORDcreate(char *id, char *value);
 
 void RECORDfree(Record);
 
-Record RECORDget(FILE *fp, long int fileIndex);
-
 void RECORDprint(Record x);
 
 void RECORDprintToFile(Record x, FILE *fp);
@@ -33,16 +31,11 @@ typedef struct index *Item;
 
 Item ITEMcreate(char *id, long pos, int active);
 
-int ITEMscan(Key *);
-
-void ITEMshow(Item);
-
 void ITEMfree(Item);
 
 void ITEMprint(Item x);
 
 #define NULLitem NULL
 #define key(A) (A->id)
-#define num(A) (A->fileIndex)
 
 #endif
