@@ -2,8 +2,8 @@ import sys
 import random, string
 
 def record_generator():
-    key_size = random.randint(1, 4094)
-    value_size = random.randint(1, (4094 - key_size))
+    key_size = random.randint(1, 4089)
+    value_size = random.randint(1, (4090 - key_size))
     key = ''.join(random.choices(string.ascii_letters + string.digits, k=key_size))
     value = ''.join(random.choices(string.ascii_letters + string.digits, k=value_size))
     return {"key": key, "value": value}
@@ -37,17 +37,8 @@ if len(sys.argv) < 3:
 
 n_records = int(sys.argv[1])
 
-records = []
-
-# records = [record("ed2", "facil", True), record("paa", "deboa", True), record("tc", "suave", False), record("cd", "jafoi", True)]
-# records = [record("ed2", "nota100", True)]
-
-for _ in range(n_records):
-    generated = record_generator()
-    records.append(record(generated['key'], generated['value'], random.choice([True, False])))
-
-# Escreve em out.dat
 with open(sys.argv[2], "wb") as outputFile:
-    for record in records:
-       outputFile.write(record.toBytes())
-
+    for _ in range(n_records):
+        generated = record_generator()
+        new = record(generated['key'], generated['value'], random.choice([True, False]))
+        outputFile.write(new.toBytes())
