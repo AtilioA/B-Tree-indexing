@@ -64,16 +64,16 @@ void startInterfaceLoop(char *filePath, Link *head)
         {
             char *id = commandData[1];
             if(strcmp(id, "") != 0){
-                FILE *fp = fopen(filePath, "rb");
 
                 Item newIndex = STsearch(id, *head);
 
                 if((newIndex != NULL) && (ITEMisActive(newIndex))){
+                    FILE *fp = fopen(filePath, "rb");
                     Record x = getRecordOnPos(fp, newIndex->fileIndex);
                     RECORDprint(x);
                     RECORDfree(x);
+                    fclose(fp);
                 }
-                fclose(fp);
             }
             free(commandData);
         }
@@ -111,14 +111,16 @@ void startInterfaceLoop(char *filePath, Link *head)
         {
             char *id = commandData[1];
             if(strcmp(id, "") != 0){
-                FILE *fp = fopen(filePath, "r+b");
 
-                // vai buscar o item na árvore com base no id
-                Item newIndex = NULL; // item retornado da BTree no lugar de NULL
+                Item newIndex = STsearch(id, *head);
 
-                recordSoftDelete(fp, newIndex->fileIndex);
+                if((newIndex != NULL) && (newIndex->active)){
+                    FILE *fp = fopen(filePath, "r+b");
+                    recordSoftDelete(fp, newIndex->fileIndex);
+                    newIndex->active = 0;
+                    fclose(fp);
+                }
 
-                fclose(fp);
             }
             free(commandData);
         }
