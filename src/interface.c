@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
+// #include <strings.h>
 #include "../include/interface.h"
 #include "../include/binfile.h"
 #include "../include/record.h"
@@ -51,7 +51,7 @@ char **readCommand()
     return commandData;
 }
 
-void startInterfaceLoop(char *filePath)
+void startInterfaceLoop(char *filePath, Link *head)
 {
 
     while (1)
@@ -66,12 +66,13 @@ void startInterfaceLoop(char *filePath)
             if(strcmp(id, "") != 0){
                 FILE *fp = fopen(filePath, "rb");
 
-                // vai buscar o item na árvore com base no id
-                Item newIndex = NULL; // item retornado da BTree no lugar de NULL
+                Item newIndex = STsearch(id, *head);
 
-                Record x = getRecordOnPos(fp, newIndex->fileIndex);
-                RECORDprint(x);
-                RECORDfree(x);
+                if((newIndex != NULL) && (ITEMisActive(newIndex))){
+                    Record x = getRecordOnPos(fp, newIndex->fileIndex);
+                    RECORDprint(x);
+                    RECORDfree(x);
+                }
                 fclose(fp);
             }
             free(commandData);
@@ -83,19 +84,24 @@ void startInterfaceLoop(char *filePath)
             if(strcmp(id, "") != 0 && strcmp(value, "") != 0){
                 FILE *fp = fopen(filePath, "r+b");
 
-                // vai buscar o item na árvore com base no id
-                Item newIndex = NULL; // item retornado da BTree no lugar de NULL
-
-                // se existir
-                    recordSoftDelete(fp, newIndex->fileIndex); // vai desabilitar o registro
-                    newIndex->fileIndex = insertRecord(fp, id, value); // insere no final do arquivo e adiciona o indice
+                Item newIndex = STsearch(id, *head);
 
                 // se não existir 
+                if(newIndex == NULL){
                     newIndex = malloc(sizeof(struct index)); 
                     newIndex->fileIndex = insertRecord(fp, id, value); // insere no final do arquivo e adiciona o indice
                     newIndex->id = malloc(sizeof(char) * strlen(id) + 1); 
+                    newIndex->active = 1;
                     strcpy(newIndex->id, id);
-                    // insere index na BTree
+                    *head = STinsert(newIndex, *head);
+                }else{
+                    if(newIndex->active){
+                        recordSoftDelete(fp, newIndex->fileIndex);
+                    }else{
+                        newIndex->active = 1;
+                    }
+                    newIndex->fileIndex = insertRecord(fp, id, value);   
+                }
                 
                 fclose(fp);
             }
@@ -118,18 +124,22 @@ void startInterfaceLoop(char *filePath)
         }
         else if (strcasecmp(command, "RUNDOWN") == 0)
         {
-            FILE *fIn = fopen(filePath, "r+b");
-            FILE *fOut = fopen(commandData[1], "w");
-            // rundown(fIn, fOut); // essa função ainda n existe
-            fclose(fIn);
-            fclose(fOut);
+            if(strcmp(commandData[1], "") != 0){
+                FILE *fIn = fopen(filePath, "r+b");
+                FILE *fOut = fopen(commandData[1], "w");
+                runST(*head, outputRecordFromItem, fIn,fOut);
+                fclose(fIn);
+                fclose(fOut);
+            }else{
+                printf("Falta 1 argumento no comando RUNDOWN\n");
+            }
             free(commandData);
         }
         else if (strcasecmp(command, "STOP") == 0)
         {
             printf("Finalizando...\n");
             free(commandData);
-            exit(1);
+            return;
         }
         else
         {

@@ -5,7 +5,7 @@ BIN		:= bin
 SRC		:= src
 INCLUDE	:= include
 
-PROGARGS	:=
+PROGARGS	:= 4 input/basic
 
 EXECUTABLE	:= trab3
 SOURCEDIRS	:= $(shell find $(SRC) -type d)

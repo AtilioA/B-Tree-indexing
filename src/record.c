@@ -4,10 +4,11 @@
 #include "../include/record.h"
 #include "../include/binfile.h"
 
-Item ITEMcreate(char *id, long pos){
+Item ITEMcreate(char *id, long pos, int active){
     Item new = malloc(sizeof(struct index));
     new->id = id;
     new->fileIndex = pos;
+    new->active = active;
     return new;
 }
 
@@ -28,6 +29,18 @@ void ITEMprint(Item x){
     }else{
         printf("%s %ld\n", x->id, x->fileIndex);
     }
+}
+
+long int ITEMgetPos(Item x){
+    if(x == NULL){
+        printf("Null item\n");
+    }else{
+        return x->fileIndex;
+    }
+}
+
+int ITEMisActive(Item x){
+    return x->active;
 }
 
 Record RECORDcreate(char *id, char *value){

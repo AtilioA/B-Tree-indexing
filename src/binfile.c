@@ -5,6 +5,7 @@
 #include <ctype.h>
 #include "../include/binfile.h"
 #include "../include/record.h"
+#include "../include/b_tree.h"
 #define MAXBLOCKSIZE 30 //lembrar de trocar essa porra pelo amor de deus
 
 struct Block
@@ -88,7 +89,7 @@ char *getValue(Block block, int posStart, int maxSize){
  * Retorna a quantidade de bytes a serem recuados, caso exista
  * um registro incompleto
  **/
-int transcribeRecords(Block block, long fileSeek){ // por enquanto só printa a chave e a posição no arquivo
+int transcribeRecords(Block block, long fileSeek, Link *head){ // por enquanto só printa a chave e a posição no arquivo
     int n = 0;
     for (int i = 0; i < block.size; i += 5+n){
         // primeira checagem de registro incompleto
@@ -103,24 +104,17 @@ int transcribeRecords(Block block, long fileSeek){ // por enquanto só printa a 
             (unsigned char)(block.bytes[i + 1]) << 8 |
             (unsigned char)(block.bytes[i]));
 
-        // int active = (int)((unsigned char)(block.bytes[i + 4])); // IGNORÁVEL
+        int active = (int)((unsigned char)(block.bytes[i + 4]));
 
         // Segunda checagem de registro incompleto
         if((block.size - i - 5 - n) < 0){
             return abs(block.size - i);
         }
 
-        Item recordIdx = malloc(sizeof(struct index));
+        Item recordIdx = ITEMcreate(getId(block, i + 5, n), fileSeek + i, active);
 
-        // posição do registro no arquivo
-        recordIdx->fileIndex = fileSeek + i;
+        *head = STinsert(recordIdx, *head);
 
-        recordIdx->id = getId(block, i + 5, n);
-
-        // Aqui vai inserir a posição e a chave na árvore binária
-        printf("%d %ld %s\n", n, recordIdx->fileIndex, recordIdx->id);
-
-        ITEMfree(recordIdx); // remover quando a inserção na btree tiver aqui
     }
 
     return 0;
@@ -155,7 +149,7 @@ Block readBlock(FILE *fp){
 
 // Essa função varre o arquivo e insere a posição e o id 
 // de cada registro na árvore de busca
-void indexFile(FILE *fp){
+void indexFile(FILE *fp, Link *head){
     if(fp == NULL){
         printf("NULL file pointer on function indexFile");
         exit(1);
@@ -170,7 +164,7 @@ void indexFile(FILE *fp){
             break;
         }
 
-        int backSeek = transcribeRecords(block, actualSeek);
+        int backSeek = transcribeRecords(block, actualSeek, head);
         free(block.bytes);
         fseek(fp, backSeek*(-1) ,SEEK_CUR);
 
@@ -198,17 +192,11 @@ Record getRecordOnBlock(Block block, long int posStart){
         (unsigned char)(block.bytes[i + 1]) << 8 |
         (unsigned char)(block.bytes[i]));
 
-    int active = (int)((unsigned char)(block.bytes[i + 4]));
+    char *id = getId(block, i + 5, n);
 
-    if(active){
-        char *id = getId(block, i + 5, n);
+    char *value = getValue(block, (strlen(id) + 6), (n - strlen(id) - 1));
 
-        char *value = getValue(block, (strlen(id) + 6), (n - strlen(id) - 1));
-
-        return RECORDcreate(id, value);
-    }else{
-        return NULL;
-    }
+    return RECORDcreate(id, value);
 
 }
 
@@ -220,6 +208,17 @@ Record getRecordOnPos(FILE *fp, long int fileIndex){
     free(block.bytes);
 
     return new;
+}
+
+// Apenas se o registro for existente ou ativo.
+void outputRecordFromItem(Item x, FILE *fp, FILE *out){
+    if (ITEMisActive(x)){
+        Record result = getRecordOnPos(fp, ITEMgetPos(x));
+
+        RECORDprintToFile(result, out);
+
+        RECORDfree(result);
+    }
 }
 
 // Essa função precisa que o fp seja aberto em modo "r+b"
