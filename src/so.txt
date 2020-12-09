@@ -1,0 +1,11 @@
+Em primeiro lugar, mainframes possuem maior escalabilidade e podem atender a uma demanda mais imprevisível vinda de usuários, processando dados massivamente em lote. Supercomputadores, por outro lado, têm maior foco em poder bruto, enquanto conjuntos de servidores podem não atender rápido o suficiente às demandas de uma grande empresa já em funcionamento.
+Ademais, mainframes são, em geral, menores e mais baratos que supercomputadores.
+
+Boa tarde, Roberta e Zé! Queria contestar a correção da questão sobre relatório de gerência de TI. Não vejo motivo para desconto dos 5 décimos em minha resposta, visto que:
+
+- Todos argumentos a favor de mainframes nos primeiros dois parágrafos do exemplo de resposta foram abordados nos meus dois primeiros parágrafos de resposta: "mainframes [...] podem atender a uma demanda mais imprevisível vinda de usuários, processando dados massivamente em lote. [...] enquanto conjuntos de servidores podem não atender rápido o suficiente às demandas de uma grande empresa já em funcionamento."
+- Nenhum dos conceitos relevantes aos argumentos do terceiro e quarto parágrafos do exemplo de resposta são discutidos em momento algum na ementa da disciplina, portanto não seriam pertinentes à resposta nesta questão de uma prova de Sistemas Operacionais, da forma como a disciplina é e foi proposta aos alunos.
+- O argumento de supercomputadores serem caros também foi apresentado em minha resposta, além do esclarecimento de que, se por um lado mainframes são capazes de processar muitos dados, etc., supercomputadores são, por outro lado, mais focados em poder computacional bruto.
+- Por fim, o exemplo de resposta é demasiadamente extenso e inviável de ser redigido no curto tempo de prova, sobretudo considerando-se a presença de outras questões mais trabalhosas na mesma prova.
+
+Sendo assim, tendo em vista os pontos apresentados, gostaria que reconsiderassem o desconto na minha nota.

@@ -12,14 +12,6 @@ struct record
 
 typedef struct record *Record;
 
-Record RECORDcreate(char *id, char *value);
-
-void RECORDfree(Record);
-
-void RECORDprint(Record x);
-
-void RECORDprintToFile(Record x, FILE *fp);
-
 typedef char *Key;
 struct index
 {
@@ -29,10 +21,25 @@ struct index
 };
 typedef struct index *Item;
 
+// Cria um Record
+Record RECORDcreate(char *id, char *value);
+
+// Libera um Record
+void RECORDfree(Record);
+
+// Imprime um Record
+void RECORDprint(Record x);
+
+// Escreve um Record num arquivo
+void RECORDprintToFile(Record x, FILE *fp);
+
+// Cria um Item sobre um registro no arquivo, dada a posição e se está ativo ou não
 Item ITEMcreate(char *id, long pos, int active);
 
+// Libera um item da memória
 void ITEMfree(Item);
 
+// Imprime um item
 void ITEMprint(Item x);
 
 #define NULLitem NULL
